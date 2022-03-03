@@ -15,6 +15,8 @@ namespace Barliesque.Utils
 		[Serializable] public class TriggerHandler : UnityEvent<Sensor, Collider> { }
 		[Serializable] public class CollisionHandler : UnityEvent<Sensor, Collision> { }
 
+		[SerializeField] private bool _collisionOrTrigger;
+
 		public TriggerHandler OnEnterTrigger;
 		public TriggerHandler OnStayTrigger;
 		public TriggerHandler OnExitTrigger;
