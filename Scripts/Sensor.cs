@@ -28,32 +28,32 @@ namespace Barliesque.Utils
 
 		private void OnTriggerEnter(Collider other)
 		{
-			OnEnterTrigger?.Invoke(this, other);
+			if (enabled) OnEnterTrigger?.Invoke(this, other);
 		}
 
 		private void OnTriggerStay(Collider other)
 		{
-			OnStayTrigger?.Invoke(this, other);
+			if (enabled) OnStayTrigger?.Invoke(this, other);
 		}
 
 		private void OnTriggerExit(Collider other)
 		{
-			OnExitTrigger?.Invoke(this, other);
+			if (enabled) OnExitTrigger?.Invoke(this, other);
 		}
 
 		private void OnCollisionEnter(Collision collision)
 		{
-			OnEnterCollision?.Invoke(this, collision);
+			if (enabled) OnEnterCollision?.Invoke(this, collision);
 		}
 
 		private void OnCollisionStay(Collision collision)
 		{
-			OnStayCollision?.Invoke(this, collision);
+			if (enabled) OnStayCollision?.Invoke(this, collision);
 		}
 
 		private void OnCollisionExit(Collision collision)
 		{
-			OnExitCollision?.Invoke(this, collision);
+			if (enabled) OnExitCollision?.Invoke(this, collision);
 		}
 
 	}
