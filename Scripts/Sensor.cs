@@ -7,7 +7,7 @@ namespace Barliesque.Utils
 {
 
 	/// <summary>
-	/// Enables handling of collision events.
+	/// Enables more convenient handling of 3D physics collision and trigger events.
 	/// </summary>
 	public class Sensor : MonoBehaviour
 	{
@@ -16,6 +16,9 @@ namespace Barliesque.Utils
 		[Serializable] public class CollisionHandler : UnityEvent<Sensor, Collision> { }
 
 		[SerializeField] private bool _collisionOrTrigger;
+		
+		//TODO  Add option to ignore repeated events for the same other body in any given frame
+		//TODO    - Use a coroutine to clear a list of Rigidbodies on the next frame
 
 		public TriggerHandler OnEnterTrigger;
 		public TriggerHandler OnStayTrigger;

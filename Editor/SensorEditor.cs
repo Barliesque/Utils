@@ -83,9 +83,10 @@ namespace Barliesque.Utils.Editor
 					var help = new StringBuilder();
 					help.Append("• Both objects must have at least one collider.\n");
 					help.Append("• At least one of the objects must have a Rigidbody, and be non-kinematic and non-static.\n");
-					help.Append("• If either collider is a trigger, then trigger events are fired--not collision events.\n");
+					help.Append("• Enable collision between two kinematic bodies: Project Settings » Physics » Contact Pairs Mode.\n");
+					help.Append("• Make sure their layers are enabled for collision in Project Settings » Physics.\n");
+					help.Append("• If either collider is a trigger, then trigger events are fired, not collision events.\n");
 					help.Append("• MeshColliders can sometimes fail to fire events when colliding with other MeshColliders.\n");
-					help.Append("• Make sure their layers are enabled for collision in Project Settings > Physics.\n");
 					help.Append("• Note that this component handles 3D physics events, not 2D.");
 					_helpText = help.ToString();
 				}
