@@ -24,7 +24,14 @@ namespace Barliesque.Utils
 		{
 			return new Vector3(vec3.x / scale.x, vec3.y / scale.y, vec3.z / scale.z);
 		}
-		
+
+		/// <summary>
+		/// Returns false if any component of the vector is infinite or NaN.
+		/// </summary>
+		static public bool IsValid(this Vector3 vec3)
+		{
+			return float.IsFinite(vec3.x) && float.IsFinite(vec3.y) && float.IsFinite(vec3.z);
+		}
 		
 		
 	}
