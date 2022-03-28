@@ -30,7 +30,9 @@ namespace Barliesque.Utils
 		/// </summary>
 		static public bool IsValid(this Vector3 vec3)
 		{
-			return float.IsFinite(vec3.x) && float.IsFinite(vec3.y) && float.IsFinite(vec3.z);
+//			return float.IsFinite(vec3.x) && float.IsFinite(vec3.y) && float.IsFinite(vec3.z);
+			return !(float.IsNaN(vec3.x) || float.IsNaN(vec3.y) || float.IsNaN(vec3.z) || 
+			         float.IsInfinity(vec3.x) || float.IsInfinity(vec3.y) || float.IsInfinity(vec3.z));
 		}
 		
 		

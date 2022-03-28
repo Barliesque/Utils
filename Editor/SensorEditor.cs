@@ -15,10 +15,10 @@ namespace Barliesque.Utils.Editor
 		static private bool _unfoldTriggerEvents = false;
 		static private bool _showHelp = false;
 
-		static private GUIContent _helpLabel = new ("Help", "Events not firing?  Expand to show helpful hints to fix the problem.");
+		static private GUIContent _helpLabel = new GUIContent("Help", "Events not firing?  Expand to show helpful hints to fix the problem.");
 		static private string _helpText;
 
-		static private GUIContent _bothLabel = new("Both Collisions & Triggers", "Force both types of events to be shown.  This does not affect which events are actually invoked.");
+		static private GUIContent _bothLabel = new GUIContent("Both Collisions & Triggers", "Force both types of events to be shown.  This does not affect which events are actually invoked.");
 		
 		override protected void CustomInspector(Sensor inst)
 		{
