@@ -14,13 +14,19 @@ namespace Barliesque.Utils
 		private event UpdateHandler _fixedUpdates;
 		private event UpdateHandler _30FPSUpdates;
 		private event UpdateHandler _oneSecUpdates;
+		private event UpdateHandler _halfSecUpdates;
+		private event UpdateHandler _quarterSecUpdates;
 		private event UpdateHandler _scaledUpdates;
 
 		private const int _30fpsMS = 1000 / 30; // Milliseconds per frame at 30fps
 		private const int _1secMS = 1000;
+		private const int _halfSecMS = 500;
+		private const int _quarterSecMS = 250;
 
 		private Stopwatch timer30FPS;
 		private Stopwatch timer1Sec;
+		private Stopwatch timerHalfSec;
+		private Stopwatch timerQuarterSec;
 		private Stopwatch timerFixed;
 
 		public delegate void UpdateHandler(float deltaTime);
@@ -32,6 +38,8 @@ namespace Barliesque.Utils
 			Fixed,
 			Frame30FPS,
 			OncePerSecond,
+			EveryHalfSecond,
+			EveryQuarterSecond,
 			Scaled
 		}
 
@@ -45,10 +53,14 @@ namespace Barliesque.Utils
 		{
 			timer30FPS = new Stopwatch();
 			timer30FPS.Start();
-			timer1Sec = new Stopwatch();
-			timer1Sec.Start();
 			timerFixed = new Stopwatch();
 			timerFixed.Start();
+			timer1Sec = new Stopwatch();
+			timer1Sec.Start();
+			timerHalfSec = new Stopwatch();
+			timerHalfSec.Start();
+			timerQuarterSec = new Stopwatch();
+			timerQuarterSec.Start();
 		}
 
 		public void AddUpdate(UpdateHandler update, Timing timing = Timing.Frame)
@@ -69,6 +81,12 @@ namespace Barliesque.Utils
 					_30FPSUpdates += update;
 					break;
 				case Timing.OncePerSecond:
+					_oneSecUpdates += update;
+					break;
+				case Timing.EveryHalfSecond:
+					_oneSecUpdates += update;
+					break;
+				case Timing.EveryQuarterSecond:
 					_oneSecUpdates += update;
 					break;
 				case Timing.Scaled:
@@ -136,6 +154,20 @@ namespace Barliesque.Utils
 				_oneSecUpdates?.Invoke(timer1Sec.ElapsedMilliseconds / 1000f);
 				timer1Sec.Reset();
 				timer1Sec.Start();
+			}
+
+			if (timerHalfSec.ElapsedMilliseconds >= _halfSecMS)
+			{
+				_halfSecUpdates?.Invoke(timerHalfSec.ElapsedMilliseconds / 1000f);
+				timerHalfSec.Reset();
+				timerHalfSec.Start();
+			}
+
+			if (timerQuarterSec.ElapsedMilliseconds >= _quarterSecMS)
+			{
+				_quarterSecUpdates?.Invoke(timerQuarterSec.ElapsedMilliseconds / 1000f);
+				timerQuarterSec.Reset();
+				timerQuarterSec.Start();
 			}
 		}
 
