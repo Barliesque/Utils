@@ -116,6 +116,12 @@ namespace Barliesque.Utils
 				case Timing.OncePerSecond:
 					_oneSecUpdates -= update;
 					break;
+				case Timing.EveryHalfSecond:
+					_halfSecUpdates -= update;
+					break;
+				case Timing.EveryQuarterSecond:
+					_quarterSecUpdates -= update;
+					break;
 				case Timing.Scaled:
 					_scaledUpdates -= update;
 					break;
@@ -131,6 +137,8 @@ namespace Barliesque.Utils
 			_lateUpdates = null;
 			_30FPSUpdates = null;
 			_oneSecUpdates = null;
+			_halfSecUpdates = null;
+			_quarterSecUpdates = null;
 			_scaledUpdates = null;
 		}
 
