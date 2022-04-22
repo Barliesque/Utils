@@ -35,6 +35,24 @@ namespace Barliesque.Utils
 			         float.IsInfinity(vec3.x) || float.IsInfinity(vec3.y) || float.IsInfinity(vec3.z));
 		}
 		
+		/// <summary>
+		/// Calculate the distance to a line segment.  See Mathf2 for additional variations of this function.
+		/// </summary>
+		/// <param name="pos">Position to measure from</param>
+		/// <param name="segA">Point A of the segment</param>
+		/// <param name="segB">Point B of the segment</param>
+		static public float DistToSeg(this Vector3 pos, Vector3 segA, Vector3 segB)
+		{
+			var delta = segB - segA;
+			var segLenSqr = delta.sqrMagnitude;
+			var distA = pos - segA;
+
+			var t = Mathf.Clamp01((distA.x * delta.x + distA.y * delta.y + distA.z * delta.z) / segLenSqr);
+			var seg = new Vector3(segA.x + t * delta.x, segA.y + t * delta.y, segA.z + t * delta.z);
+
+			return (pos - seg).magnitude;
+		}
+
 		
 	}
 }
