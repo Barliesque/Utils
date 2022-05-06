@@ -53,6 +53,12 @@ namespace Barliesque.Utils
 			return (pos - seg).magnitude;
 		}
 
+		static public float Volume(this Vector3 pos, bool isHalf = true)
+		{
+			if (isHalf) return pos.x * pos.y * pos.z * 8f;
+			return pos.x * pos.y * pos.z;
+		}
+
 		
 	}
 }
