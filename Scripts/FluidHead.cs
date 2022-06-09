@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 
 namespace Barliesque.Utils
@@ -11,9 +12,20 @@ namespace Barliesque.Utils
 		[SerializeField] private Transform _playerCamera;
 		[SerializeField] private float _rotationSmoothTime = 0.7f;
 		[SerializeField] private float _positionSmoothTime = 0.7f;
+		[SerializeField] private bool _disableOnMobile = true;
 
 		private Quaternion _rotationVelocity = Quaternion.identity;
 		private Vector3 _positionVelocity = Vector3.zero;
+
+		
+		private void Awake()
+		{
+			if (_disableOnMobile && Application.isMobilePlatform && !Application.isEditor)
+			{
+				gameObject.SetActive(false);
+			}
+		}
+		
 
 		private void LateUpdate()
 		{
