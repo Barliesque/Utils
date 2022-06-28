@@ -30,6 +30,11 @@ namespace Barliesque.Utils
 		}
 		
 
+		static public string GetPath(this GameObject go, char separator='/')
+		{
+			return go.transform.GetPath(separator);
+		}
+
 	}
 
 }

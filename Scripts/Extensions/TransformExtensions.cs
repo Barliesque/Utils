@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 namespace Barliesque.Utils
@@ -91,5 +92,18 @@ namespace Barliesque.Utils
 			var angle = 90f - Mathf.Atan2(norm.z, norm.x) * Mathf.Rad2Deg;
 			xform.eulerAngles = new Vector3(0f, angle, 0f);
 		}
+
+		static public string GetPath(this Transform xform, char separator='/')
+		{
+			var path = new StringBuilder(xform.name);
+			while (xform.parent != null)
+			{
+				xform = xform.parent;
+				path.Insert(0, separator);
+				path.Insert(0, xform.name);
+			}
+			return path.ToString();
+		}
+		
 	}
 }
