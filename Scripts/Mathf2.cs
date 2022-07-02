@@ -196,6 +196,68 @@ namespace Barliesque.Utils
 
 			return (pos - seg).magnitude;
 		}
+
+		/// <summary> Calculates a smooth union between two values, rather than the hard limit of a traditional min() function. </summary>
+		/// <param name="a">First value</param>
+		/// <param name="b">Second value</param>
+		/// <param name="smoothing">0 = no smoothing, 1 = fully smoothed</param>
+		/// <seealso cref="https://www.shadertoy.com/view/Ml3Gz8"/>
+		static public float SmoothMin(float a, float b, float smoothing = 1f)
+		{
+			var h = Mathf.Clamp01(0.5f + 0.5f * (a - b) / smoothing);
+			return Mathf.Lerp(a, b, h) - smoothing * h * (1f - h);
+		}
+		
+		/// <summary> Calculates a smooth union between two values, rather than the hard limit of a traditional max() function. </summary>
+		/// <param name="a">First value</param>
+		/// <param name="b">Second value</param>
+		/// <param name="smoothing">0 = no smoothing, 1 = fully smoothed</param>
+		/// <seealso cref="https://www.shadertoy.com/view/Ml3Gz8"/>
+		static public float SmoothMax(float a, float b, float smoothing = 1f)
+		{
+			var h = Mathf.Clamp01(0.5f + 0.5f * (a - b) / -smoothing);
+			return Mathf.Lerp(a, b, h) + smoothing * h * (1f - h);
+		}
+
+		/// <summary> Calculates a smooth union between two values, rather than the hard limit of a traditional min() function. </summary>
+		/// <param name="a">First value</param>
+		/// <param name="b">Second value</param>
+		/// <param name="smoothing">0 = no smoothing, 1 = fully smoothed</param>
+		/// <seealso cref="https://www.shadertoy.com/view/Ml3Gz8"/>
+		static public Vector2 SmoothMin(Vector2 a, Vector2 b, float smoothing = 1f)
+		{
+			return new Vector2(SmoothMin(a.x, b.x, smoothing), SmoothMin(a.y, b.y, smoothing));
+		}
+
+		/// <summary> Calculates a smooth union between two values, rather than the hard limit of a traditional max() function. </summary>
+		/// <param name="a">First value</param>
+		/// <param name="b">Second value</param>
+		/// <param name="smoothing">0 = no smoothing, 1 = fully smoothed</param>
+		/// <seealso cref="https://www.shadertoy.com/view/Ml3Gz8"/>
+		static public Vector2 SmoothMax(Vector2 a, Vector2 b, float smoothing = 1f)
+		{
+			return new Vector2(SmoothMax(a.x, b.x, smoothing), SmoothMax(a.y, b.y, smoothing));
+		}
+
+		/// <summary> Calculates a smooth union between two values, rather than the hard limit of a traditional min() function. </summary>
+		/// <param name="a">First value</param>
+		/// <param name="b">Second value</param>
+		/// <param name="smoothing">0 = no smoothing, 1 = fully smoothed</param>
+		/// <seealso cref="https://www.shadertoy.com/view/Ml3Gz8"/>
+		static public Vector3 SmoothMin(Vector3 a, Vector3 b, float smoothing = 1f)
+		{
+			return new Vector3(SmoothMin(a.x, b.x, smoothing), SmoothMin(a.y, b.y, smoothing), SmoothMin(a.z, b.z, smoothing));
+		}
+
+		/// <summary> Calculates a smooth union between two values, rather than the hard limit of a traditional max() function. </summary>
+		/// <param name="a">First value</param>
+		/// <param name="b">Second value</param>
+		/// <param name="smoothing">0 = no smoothing, 1 = fully smoothed</param>
+		/// <seealso cref="https://www.shadertoy.com/view/Ml3Gz8"/>
+		static public Vector3 SmoothMax(Vector3 a, Vector3 b, float smoothing = 1f)
+		{
+			return new Vector3(SmoothMax(a.x, b.x, smoothing), SmoothMax(a.y, b.y, smoothing), SmoothMax(a.z, b.z, smoothing));
+		}
 		
 	}
 }
