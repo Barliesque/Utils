@@ -18,7 +18,7 @@ namespace Barliesque.Utils.Editor
 		static private GUIContent _helpLabel = new GUIContent("Help", "Events not firing?  Expand to show helpful hints to fix the problem.");
 		static private string _helpText;
 
-		static private GUIContent _bothLabel = new GUIContent("Both Collisions & Triggers", "Force both types of events to be shown.  This does not affect which events are actually invoked.");
+		static private GUIContent _eventTypeLabel = new GUIContent("Event Type(s)", "What type of event(s) to show in this inspector -- does not affect which events are actually invoked.");
 		
 		override protected void CustomInspector(Sensor inst)
 		{
@@ -32,7 +32,12 @@ namespace Barliesque.Utils.Editor
 				gotCollision |= (!_colliders[i].isTrigger);
 			}
 
-			var both = PropertyField("_collisionOrTrigger", _bothLabel).boolValue;
+			var eventTypes = (Sensor.SensorEventType)PropertyField("_eventType", _eventTypeLabel).intValue;
+			bool wantCollision = (eventTypes & Sensor.SensorEventType.Collision) != 0;
+			bool wantTrigger = (eventTypes & Sensor.SensorEventType.Trigger) != 0;
+			
+			PropertyField("_collisionLayers");
+			PropertyField("_oncePerBody");
 
 			if (!body || _colliders.Count == 0)
 			{
@@ -50,13 +55,13 @@ namespace Barliesque.Utils.Editor
 				{
 					if (gotTrigger)
 					{
-						EditorTools.HelpBox("This Sensor cannot invoke collision events because it has no non-trigger colliders!", MessageType.Warning);
+						if (wantCollision) EditorTools.HelpBox("This Sensor cannot invoke collision events because it has no non-trigger colliders!", MessageType.Warning);
 						EditorTools.HelpBox("This Sensor will invoke events: <b>OnEnterTrigger</b>, <b>OnExitTrigger</b> and <b>OnStayTrigger</b>",
 							MessageType.Info);
 					}
 					else if (gotCollision)
 					{
-						if (both)
+						if (eventTypes == (Sensor.SensorEventType.Collision & Sensor.SensorEventType.Trigger))
 						{
 							EditorTools.HelpBox(
 								"This non-trigger object will invoke collision events or trigger events, based upon whether the other object is a trigger.",
@@ -70,8 +75,8 @@ namespace Barliesque.Utils.Editor
 						}
 					}
 				}
-				if (gotCollision || both) EventsGroup("Collision Events", ref _unfoldCollisionEvents, new [] {"OnEnterCollision", "OnExitCollision", "OnStayCollision"});
-				if (gotTrigger || both) EventsGroup("Trigger Events", ref _unfoldTriggerEvents, new [] {"OnEnterTrigger", "OnExitTrigger", "OnStayTrigger"});
+				if (wantCollision) EventsGroup("Collision Events", ref _unfoldCollisionEvents, new [] {"OnEnterCollision", "OnExitCollision", "OnStayCollision"});
+				if (wantTrigger) EventsGroup("Trigger Events", ref _unfoldTriggerEvents, new [] {"OnEnterTrigger", "OnExitTrigger", "OnStayTrigger"});
 			}
 			
 			EditorGUILayout.Space();
