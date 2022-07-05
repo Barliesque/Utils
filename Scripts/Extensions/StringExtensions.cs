@@ -8,6 +8,18 @@ namespace Barliesque.Utils
 
 	static public class StringExtensions
 	{
+		
+		/// <summary>
+		/// Search for a substring with specified string comparison method. 
+		/// </summary>
+		/// <param name="source">The string to be searched.</param>
+		/// <param name="target">The substring for which to search.</param>
+		/// <param name="comp">A string comparer to use for the search.</param>
+		/// <returns>Returns true if found.</returns>
+		public static bool Contains(this string source, string target, StringComparison comp)
+		{
+			return source?.IndexOf(target, comp) >= 0;
+		}
 
 		/// <summary>
 		/// Returns the string, converted to PascalCase
@@ -52,7 +64,8 @@ namespace Barliesque.Utils
 		{
 			return Regex.Replace(Regex.Replace(value, @"(\P{Ll})(\P{Ll}\p{Ll})", "$1 $2"), @"(\p{Ll})(\P{Ll})", "$1 $2");
 		}
-		// There are loads of alternate RegEx expressions scattered across the web to do this!  Maybe one of these is worth checking out...
+		
+		//TODO  There are loads of alternate RegEx expressions scattered across the web to do this!  Maybe one of these is worth checking out...
 		//	return Regex.Replace(value, @"(?<=[a-z])([A-Z])", @" $1").Trim();
 		//	return Regex.Replace(value, @"(\B[A-Z]+?(?=[A-Z][^A-Z])|\B[A-Z]+?(?=[^A-Z]))", @" $1").Trim();
 
