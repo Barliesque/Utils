@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 
 namespace Barliesque.Utils
@@ -10,8 +9,8 @@ namespace Barliesque.Utils
 	public class FluidHead : MonoBehaviour
 	{
 		[SerializeField] private Transform _playerCamera;
-		[SerializeField] private float _rotationSmoothTime = 0.7f;
-		[SerializeField] private float _positionSmoothTime = 0.7f;
+		[SerializeField] private float _rotationSmoothTime = 0.25f;
+		[SerializeField] private float _positionSmoothTime = 0.5f;
 		[SerializeField] private bool _disableOnMobile = true;
 
 		private Quaternion _rotationVelocity = Quaternion.identity;
