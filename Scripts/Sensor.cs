@@ -15,7 +15,10 @@ namespace Barliesque.Utils
 		[Serializable] public class TriggerHandler : UnityEvent<Sensor, Collider> { }
 		[Serializable] public class CollisionHandler : UnityEvent<Sensor, Collision> { }
 
+		#pragma warning disable 414  /// Assigned but never used -- Except by the SensorEditor
 		[SerializeField] private SensorEventType _eventType = (SensorEventType)~0;
+		#pragma warning restore 414
+		
 		[SerializeField] private LayerMask _collisionLayers = ~0;
 		
 		[Tooltip("If selected, collision with bodies containing multiple colliders will only trigger a single enter/exit event, rather than an event for each collider.")]
