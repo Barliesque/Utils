@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Barliesque.Utils
@@ -12,9 +13,9 @@ namespace Barliesque.Utils
 		public SmoothVector4(int sampleCount = 8, Vector4 initialValue = new Vector4())
 		{
 			_samples = new Vector4[sampleCount];
-			for (int i = 0; i < sampleCount; i++) _samples[i] = initialValue;
-			smoothed = initialValue;
 			_sampleWeight = 1f / sampleCount;
+			for (int i = 0; i < sampleCount; i++) _samples[i] = initialValue * _sampleWeight;
+			smoothed = initialValue;
 		}
 
 		public void AddSample(Vector4 newSample)
@@ -28,6 +29,12 @@ namespace Barliesque.Utils
 			// Store the new sample and move on to the next
 			_samples[_sampleIndex] = sample;
 			_sampleIndex = old;
+		}
+
+		public void Reset(Vector4 value = default)
+		{
+			Array.Fill(_samples, value * _sampleWeight);
+			smoothed = value;
 		}
 
 		public Vector4 smoothed { get; private set; }

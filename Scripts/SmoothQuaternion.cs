@@ -50,6 +50,12 @@ namespace Barliesque.Utils
 			_samples[_sampleIndex] = sample;
 			_sampleIndex = old;
 		}
+
+		public void Reset()
+		{
+			_samples.Initialize();
+			_smoothed = Quaternion.identity;
+		}
 		
 		
 		public Quaternion smoothed
