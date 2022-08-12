@@ -52,6 +52,17 @@ namespace Barliesque.Utils
 			);
 		}
 
+		/// <summary>
+		/// Compare two direction vectors.
+		/// </summary>
+		/// <param name="a">The first direction vector</param>
+		/// <param name="b">The second direction vector</param>
+		/// <returns>Returns a value from 0 to 1, where 1 is equality and 0 is an angle of 90 degrees or more.</returns>
+		static public float Compare(Vector3 a, Vector3 b)
+		{
+			return Mathf.Clamp01(Vector3.Dot(a, b));
+		}
+
 	}
 
 }
