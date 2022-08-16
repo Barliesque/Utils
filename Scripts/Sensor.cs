@@ -85,7 +85,14 @@ namespace Barliesque.Utils
 		private void OnCollisionEnter(Collision collision)
 		{
 			if (!enabled) return;
-			if (!CollisionLayers.Contains(collision.body.gameObject.layer)) return;
+			
+#if UNITY_2021_1_OR_NEWER
+			var bodyGO = collision.body.gameObject;
+#else
+			var bodyGO = collision.gameObject.GetComponentInParent<Rigidbody>().gameObject;
+#endif
+			
+			if (!CollisionLayers.Contains(bodyGO.layer)) return;
 			if (!OncePerBody)
 			{
 				OnEnterCollision?.Invoke(this, collision);
@@ -104,14 +111,26 @@ namespace Barliesque.Utils
 
 		private void OnCollisionStay(Collision collision)
 		{
-			if (!CollisionLayers.Contains(collision.body.gameObject.layer)) return;
+#if UNITY_2021_1_OR_NEWER
+			var bodyGO = collision.body.gameObject;
+#else
+			var bodyGO = collision.gameObject.GetComponentInParent<Rigidbody>().gameObject;
+#endif
+			
+			if (!CollisionLayers.Contains(bodyGO.layer)) return;
 			if (enabled) OnStayCollision?.Invoke(this, collision);
 		}
 
 		private void OnCollisionExit(Collision collision)
 		{
 			if (!enabled) return;
-			if (!CollisionLayers.Contains(collision.body.gameObject.layer)) return;
+			
+#if UNITY_2021_1_OR_NEWER
+			var bodyGO = collision.body.gameObject;
+#else
+			var bodyGO = collision.gameObject.GetComponentInParent<Rigidbody>().gameObject;
+#endif
+			if (!CollisionLayers.Contains(bodyGO.layer)) return;
 			if (!OncePerBody)
 			{
 				OnExitCollision?.Invoke(this, collision);
