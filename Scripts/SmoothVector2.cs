@@ -33,7 +33,11 @@ namespace Barliesque.Utils
 
 		public void Reset(Vector2 value = default)
 		{
-			Array.Fill(_samples, value * _sampleWeight);
+			for (int i = 0, count = _samples.Length; i < count; i++)
+			{
+				_samples[i] = value * _sampleWeight;
+			}
+			//Array.Fill(_samples, value * _sampleWeight);
 			smoothed = value;
 		}
 
