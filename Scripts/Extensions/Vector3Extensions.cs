@@ -4,11 +4,25 @@ namespace Barliesque.Utils
 {
 	static public class Vector3Extensions
 	{
+		
+		/// <summary>
+		/// Gets the value of a specified axis from this Vector3.
+		/// </summary>
+		/// <param name="vec3"></param>
+		/// <param name="axis"></param>
+		/// <returns></returns>
 		static public float GetAxis(this Vector3 vec3, Axis axis)
 		{
 			return axis == Axis.X ? vec3.x : (axis == Axis.Y ? vec3.y : vec3.z);
 		}
 
+		/// <summary>
+		/// Returns the Vector3 with a specified axis value changed.  Note that this cannot modify the original Vector3 and must be reassigned.
+		/// </summary>
+		/// <param name="vec3"></param>
+		/// <param name="axis"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
 		static public Vector3 SetAxis(this Vector3 vec3, Axis axis, float value)
 		{
 			if (axis == Axis.X) vec3.x = value;
