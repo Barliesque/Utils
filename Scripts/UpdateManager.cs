@@ -16,17 +16,20 @@ namespace Barliesque.Utils
 		private event UpdateHandler _oneSecUpdates;
 		private event UpdateHandler _halfSecUpdates;
 		private event UpdateHandler _quarterSecUpdates;
+		private event UpdateHandler _eighthSecUpdates;
 		private event UpdateHandler _scaledUpdates;
 
 		private const int _30fpsMS = 1000 / 30; // Milliseconds per frame at 30fps
 		private const int _1secMS = 1000;
 		private const int _halfSecMS = 500;
 		private const int _quarterSecMS = 250;
+		private const int _eighthSecMS = 125;
 
 		private Stopwatch timer30FPS;
 		private Stopwatch timer1Sec;
 		private Stopwatch timerHalfSec;
 		private Stopwatch timerQuarterSec;
+		private Stopwatch timerEighthSec;
 		private Stopwatch timerFixed;
 
 		public delegate void UpdateHandler(float deltaTime);
@@ -40,6 +43,7 @@ namespace Barliesque.Utils
 			OncePerSecond,
 			EveryHalfSecond,
 			EveryQuarterSecond,
+			EveryEighthSecond,
 			Scaled
 		}
 
@@ -61,6 +65,8 @@ namespace Barliesque.Utils
 			timerHalfSec.Start();
 			timerQuarterSec = new Stopwatch();
 			timerQuarterSec.Start();
+			timerEighthSec = new Stopwatch();
+			timerEighthSec.Start();
 		}
 
 		public void AddUpdate(UpdateHandler update, Timing timing = Timing.Frame)
@@ -84,10 +90,13 @@ namespace Barliesque.Utils
 					_oneSecUpdates += update;
 					break;
 				case Timing.EveryHalfSecond:
-					_oneSecUpdates += update;
+					_halfSecUpdates += update;
 					break;
 				case Timing.EveryQuarterSecond:
-					_oneSecUpdates += update;
+					_quarterSecUpdates += update;
+					break;
+				case Timing.EveryEighthSecond:
+					_eighthSecUpdates += update;
 					break;
 				case Timing.Scaled:
 					_scaledUpdates += update;
@@ -122,6 +131,9 @@ namespace Barliesque.Utils
 				case Timing.EveryQuarterSecond:
 					_quarterSecUpdates -= update;
 					break;
+				case Timing.EveryEighthSecond:
+					_eighthSecUpdates -= update;
+					break;
 				case Timing.Scaled:
 					_scaledUpdates -= update;
 					break;
@@ -139,6 +151,7 @@ namespace Barliesque.Utils
 			_oneSecUpdates = null;
 			_halfSecUpdates = null;
 			_quarterSecUpdates = null;
+			_eighthSecUpdates = null;
 			_scaledUpdates = null;
 		}
 
@@ -176,6 +189,13 @@ namespace Barliesque.Utils
 				_quarterSecUpdates?.Invoke(timerQuarterSec.ElapsedMilliseconds / 1000f);
 				timerQuarterSec.Reset();
 				timerQuarterSec.Start();
+			}
+
+			if (timerEighthSec.ElapsedMilliseconds >= _eighthSecMS)
+			{
+				_eighthSecUpdates?.Invoke(timerEighthSec.ElapsedMilliseconds / 1000f);
+				timerEighthSec.Reset();
+				timerEighthSec.Start();
 			}
 		}
 
