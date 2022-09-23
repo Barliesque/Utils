@@ -2,6 +2,7 @@
 
 namespace Barliesque.Utils
 {
+	/// TODO  This should be revamped, for consistency, using the approach found here:  https://theorangeduck.com/page/spring-roll-call
 	public class Spring2D
 	{
 		public Vector2 Value;

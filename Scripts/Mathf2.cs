@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace Barliesque.Utils
@@ -258,6 +259,97 @@ namespace Barliesque.Utils
 		{
 			return new Vector3(SmoothMax(a.x, b.x, smoothing), SmoothMax(a.y, b.y, smoothing), SmoothMax(a.z, b.z, smoothing));
 		}
+
+		/// <summary>
+		/// Exponential interpolation between two values, using t.
+		/// </summary>
+		/// <param name="fromValue">The value returned when t is 0.</param>
+		/// <param name="toValue">The value returned when t is 1.</param>
+		/// <param name="t">A value from 0 to 1, though this is not clamped.</param>
+		/// <returns></returns>
+		static public float Eerp(float fromValue, float toValue, float t)
+		{
+			return fromValue * Mathf.Pow(toValue / fromValue, t);
+			//return Mathf.Pow(fromValue, 1f - t) * Mathf.Pow(toValue, t);
+		}
+
+		/// <summary>
+		/// Interpolate a value towards a target, in a manner that's consistent regardless of framerate.
+		/// </summary>
+		/// <param name="current">The current value.</param>
+		/// <param name="target">The target value.</param>
+		/// <param name="halfLife">Rate of change;  the time it should take to reach half-way to the target.</param>
+		/// <param name="deltaTime">Elapsed time since the last update.</param>
+		/// <seealso cref="https://theorangeduck.com/page/spring-roll-call"/>
+		static public float Damper(float current, float target, float halfLife, float deltaTime)
+		{
+			return Mathf.Lerp(current, target, 1f - FastNegExp((0.69314718056f * deltaTime) / (halfLife + 1e-5f)));
+		}
+		
+		/// <summary>
+		/// Interpolate a value towards a target, in a manner that's consistent regardless of framerate.
+		/// </summary>
+		/// <param name="current">The current value.</param>
+		/// <param name="target">The target value.</param>
+		/// <param name="halfLife">Rate of change;  the time it should take to reach half-way to the target.</param>
+		/// <seealso cref="https://theorangeduck.com/page/spring-roll-call"/>
+		static public float Damper(float current, float target, float halfLife)
+		{
+			return Mathf.Lerp(current, target, 1f - FastNegExp((0.69314718056f * Time.deltaTime) / (halfLife + 1e-5f)));
+		}
+		
+		/// <summary>
+		/// Interpolate a value towards a target, in a manner that's consistent regardless of framerate.
+		/// </summary>
+		/// <param name="current">The current value.</param>
+		/// <param name="target">The target value.</param>
+		/// <param name="halfLife">Rate of change;  the time it should take to reach half-way to the target.</param>
+		/// <param name="deltaTime">Elapsed time since the last update.</param>
+		/// <seealso cref="https://theorangeduck.com/page/spring-roll-call"/>
+		static public Vector2 Damper(Vector2 current, Vector2 target, float halfLife, float deltaTime)
+		{
+			return Vector2.Lerp(current, target, 1f - FastNegExp((0.69314718056f * deltaTime) / (halfLife + 1e-5f)));
+		}
+		
+		/// <summary>
+		/// Interpolate a value towards a target, in a manner that's consistent regardless of framerate.
+		/// </summary>
+		/// <param name="current">The current value.</param>
+		/// <param name="target">The target value.</param>
+		/// <param name="halfLife">Rate of change;  the time it should take to reach half-way to the target.</param>
+		/// <seealso cref="https://theorangeduck.com/page/spring-roll-call"/>
+		static public Vector2 Damper(Vector2 current, Vector2 target, float halfLife)
+		{
+			return Vector2.Lerp(current, target, 1f - FastNegExp((0.69314718056f * Time.deltaTime) / (halfLife + 1e-5f)));
+		}
+		
+		/// <summary>
+		/// Interpolate a value towards a target, in a manner that's consistent regardless of framerate.
+		/// </summary>
+		/// <param name="current">The current value.</param>
+		/// <param name="target">The target value.</param>
+		/// <param name="halfLife">Rate of change;  the time it should take to reach half-way to the target.</param>
+		/// <param name="deltaTime">Elapsed time since the last update.</param>
+		/// <seealso cref="https://theorangeduck.com/page/spring-roll-call"/>
+		static public Vector3 Damper(Vector3 current, Vector3 target, float halfLife, float deltaTime)
+		{
+			return Vector3.Lerp(current, target, 1f - FastNegExp((0.69314718056f * deltaTime) / (halfLife + 1e-5f)));
+		}
+		
+		/// <summary>
+		/// Interpolate a value towards a target, in a manner that's consistent regardless of framerate.
+		/// </summary>
+		/// <param name="current">The current value.</param>
+		/// <param name="target">The target value.</param>
+		/// <param name="halfLife">Rate of change;  the time it should take to reach half-way to the target.</param>
+		/// <seealso cref="https://theorangeduck.com/page/spring-roll-call"/>
+		static public Vector3 Damper(Vector3 current, Vector3 target, float halfLife)
+		{
+			return Vector3.Lerp(current, target, 1f - FastNegExp((0.69314718056f * Time.deltaTime) / (halfLife + 1e-5f)));
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		static private float FastNegExp(float x) => 1f / (1f + x + 0.48f * x * x + 0.235f * x * x * x);
 		
 	}
 }
