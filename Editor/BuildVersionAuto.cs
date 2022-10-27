@@ -4,12 +4,13 @@ using UnityEditor.Build.Reporting;
 using UnityEngine;
 
 /// <summary>
-/// Automatically increment the PlayerSettings.BundleVersion whenever a new build is made!
+/// Automatically increment the PlayerSettings.BundleVersion just before making a new build
 /// </summary>
-public class BuildVersionAuto : IPostprocessBuildWithReport
+public class BuildVersionAuto : IPreprocessBuildWithReport
 {
-	public int callbackOrder { get; }
-	public void OnPostprocessBuild(BuildReport report)
+	public int callbackOrder => 0;
+	
+	public void OnPreprocessBuild(BuildReport report)
 	{
 		var parts = PlayerSettings.bundleVersion.Split('.');
 		if (parts == null || parts.Length == 0) parts = new[] { "0", "0", "0" };
