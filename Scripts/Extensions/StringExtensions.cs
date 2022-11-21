@@ -8,6 +8,24 @@ namespace Barliesque.Utils
 
 	static public class StringExtensions
 	{
+
+		/// <summary>
+		/// How many characters does this string have in common with another?
+		/// </summary>
+		/// <param name="a">This string</param>
+		/// <param name="b">Another string</param>
+		/// <returns>Returns the number of characters, from left to right, the two strings have in common.</returns>
+		static public int MatchingChars(this string a, string b)
+		{
+			if (string.IsNullOrEmpty(a) || string.IsNullOrEmpty(b)) return 0;
+			var len = Math.Min(a.Length, b.Length);
+			for (int i = 0; i < len; i++)
+			{
+				if (a[i] != b[i]) return i;
+			}
+			return len;
+		}
+		
 		
 		/// <summary>
 		/// Search for a substring with specified string comparison method. 
