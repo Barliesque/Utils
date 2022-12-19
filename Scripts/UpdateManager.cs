@@ -142,17 +142,17 @@ namespace Barliesque.Utils
 			}
 		}
 
-		public void RemoveAll()
+		static public void RemoveAll()
 		{
-			_fixedUpdates = null;
-			_frameUpdates = null;
-			_lateUpdates = null;
-			_30FPSUpdates = null;
-			_oneSecUpdates = null;
-			_halfSecUpdates = null;
-			_quarterSecUpdates = null;
-			_eighthSecUpdates = null;
-			_scaledUpdates = null;
+			_inst._fixedUpdates = null;
+			_inst._frameUpdates = null;
+			_inst._lateUpdates = null;
+			_inst._30FPSUpdates = null;
+			_inst._oneSecUpdates = null;
+			_inst._halfSecUpdates = null;
+			_inst._quarterSecUpdates = null;
+			_inst._eighthSecUpdates = null;
+			_inst._scaledUpdates = null;
 		}
 
 		//....................................
