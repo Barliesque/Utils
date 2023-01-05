@@ -15,6 +15,13 @@ namespace Barliesque.Utils
 		private float _threshold;
 		private float _heldTime;
 
+		/// <summary>
+		/// To enable logging, set this string which will be used as a prefix when logging.
+		/// </summary>
+		public string LogChanges = null;
+		
+		private int _lastUpdated = -1;
+
 
 		/// <summary>
 		/// Create a ButtonState to track the current state of a controller button
@@ -32,7 +39,13 @@ namespace Barliesque.Utils
 		/// <param name="analog">The analog value of the button, from 0.0 to 1.0</param>
 		public void Update(float analog)
 		{
-			_wasActive = IsActive;
+			if (_lastUpdated != Time.frameCount)
+			{
+				// Do not allow _wasActive to be changed multiple times per frame
+				_wasActive = IsActive;
+				_lastUpdated = Time.frameCount;
+			}
+			
 			_analog = analog;
 
 			if (_wasActive && IsActive)
@@ -42,6 +55,42 @@ namespace Barliesque.Utils
 			else
 			{
 				_heldTime = 0f;
+			}
+			
+			if (!string.IsNullOrEmpty(LogChanges) && IsActive != _wasActive)
+			{
+				Debug.Log($"ButtonState [{LogChanges}] changed to {IsActive}");
+			}
+		}
+
+		
+		/// <summary>
+		/// To be called once every frame to update the current state of the button.
+		/// </summary>
+		/// <param name="isActive">The current state of the button.</param>
+		public void Update(bool isActive)
+		{
+			if (_lastUpdated != Time.frameCount)
+			{
+				// Do not allow _wasActive to be changed multiple times per frame
+				_wasActive = IsActive;
+				_lastUpdated = Time.frameCount;
+			}
+			
+			_analog = isActive ? 1f : 0f;
+
+			if (_wasActive && IsActive)
+			{
+				_heldTime += Time.unscaledDeltaTime;
+			}
+			else
+			{
+				_heldTime = 0f;
+			}
+			
+			if (!string.IsNullOrEmpty(LogChanges) && IsActive != _wasActive)
+			{
+				Debug.Log($"ButtonState [{LogChanges}] changed to {IsActive}");
 			}
 		}
 
