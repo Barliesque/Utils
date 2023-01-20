@@ -1,3 +1,16 @@
-﻿{
-	"name": "Barliesque.Utils"
+{
+    "name": "Barliesque.Utils",
+    "rootNamespace": "",
+    "references": [
+        "GUID:e2231c579fc13c0438fa7f5353cc67f6"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }
