@@ -44,8 +44,8 @@ namespace Barliesque.Utils
 
 		private void OnDisable()
 		{
-			if (_recycling == Recycling.Timed) StopAllCoroutines();
-			if (_recycling == Recycling.OnDisable) Recycle();
+			if (_recycling is Recycling.Timed or Recycling.OnDisable) StopAllCoroutines();
+			if (_recycling == Recycling.OnDisable) RecycleNextFrame();
 		}
 		
 		private IEnumerator TimedRecycle()
@@ -58,5 +58,11 @@ namespace Barliesque.Utils
 		{
 			PrefabPool.Recycle(this);
 		}
+
+		public void RecycleNextFrame()
+		{
+			PrefabPool.RecycleNextFrame(this);
+		}
+		
 	}
 }

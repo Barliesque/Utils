@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Barliesque.InspectorTools;
 using UnityEngine;
 
@@ -105,7 +106,7 @@ namespace Barliesque.Utils
 			if (active > _inst._maxActive[index]) _inst._maxActive[index] = active;
 			#endif
 
-			return (item is T poolable) ? poolable : item.GetComponent<T>();
+			return item as T ?? item.GetComponent<T>();
 		}
 		
 
@@ -113,7 +114,7 @@ namespace Barliesque.Utils
 		{
 			var pool = item._pool;
 			var xform = item.GetComponent<Transform>();
-			if (item._pool.childCount >= item.MaxInstances)
+			if (pool.childCount >= item.MaxInstances)
 			{
 				_inst._counts[pool.GetSiblingIndex()]--;
 				Destroy(item.gameObject);
@@ -123,6 +124,17 @@ namespace Barliesque.Utils
 				xform.SetParent(pool);
 			}
 		}
-		
+
+		static public void RecycleNextFrame(PoolablePrefab instance)
+		{
+			_inst.StopAllCoroutines();
+			_inst.StartCoroutine(CRRecycleNextFrame(instance));
+		}
+
+		static private IEnumerator CRRecycleNextFrame(PoolablePrefab instance)
+		{
+			yield return null;
+			Recycle(instance);
+		}
 	}
 }
