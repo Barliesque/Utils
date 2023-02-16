@@ -19,7 +19,7 @@ public class BuildVersionAuto : IPreprocessBuildWithReport
 		if (success)
 		{
 			parts[digit] = (ver + 1).ToString();
-			PlayerSettings.bundleVersion = string.Join('.', parts);
+			PlayerSettings.bundleVersion = string.Join(".", parts);
 		}
 		else
 		{
