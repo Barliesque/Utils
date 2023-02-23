@@ -2,7 +2,8 @@
     "name": "Barliesque.Utils.Editor",
     "references": [
         "Barliesque.Utils",
-        "Barliesque.InspectorTools.Editor"
+        "Barliesque.InspectorTools.Editor",
+        "Barliesque.EventObjects"
     ],
     "includePlatforms": [
         "Editor"

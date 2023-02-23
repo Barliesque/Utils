@@ -1,3 +1,4 @@
+using System;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
@@ -26,5 +27,20 @@ public class BuildVersionAuto : IPreprocessBuildWithReport
 			PlayerSettings.bundleVersion = $"{PlayerSettings.bundleVersion}.1";
 		}
 		Debug.Log($"PlayerSettings.bundleVersion updated to:  {PlayerSettings.bundleVersion}");
+		
+		string[] guids = AssetDatabase.FindAssets($"t:{typeof(GaugeString)}");
+		foreach (var guid in guids)
+		{
+			string path = AssetDatabase.GUIDToAssetPath(guids[0]);
+			var buildDateTime = AssetDatabase.LoadAssetAtPath<GaugeString>(path);
+			if (buildDateTime.name != "BuildDateTime") continue;
+			if (!buildDateTime.IsPersistent) Debug.LogError($"Could not store BuildDateTime because Gauge is not Persistent: {path}");
+			var key = buildDateTime.CreateKey(null, null);
+			key.Value = DateTime.Now.ToString("g");
+			key.Dispose();
+			EditorUtility.SetDirty(buildDateTime);
+		}
+		
 	}
+	
 }
