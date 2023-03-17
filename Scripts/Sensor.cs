@@ -16,7 +16,7 @@ namespace Barliesque.Utils
 		[Serializable] public class CollisionHandler : UnityEvent<Sensor, Collision> { }
 
 		#pragma warning disable 414  /// Assigned but never used -- Except by the SensorEditor
-		[SerializeField] private SensorEventType _eventType = (SensorEventType)~0;
+		[SerializeField] private SensorEventType _eventType = SensorEventType.Trigger;
 		#pragma warning restore 414
 		
 		[SerializeField] private LayerMask _collisionLayers = ~0;
@@ -68,11 +68,13 @@ namespace Barliesque.Utils
 			OnEnterTrigger?.Invoke(this, other);
 		}
 
+		#if SENSOR_STAY
 		private void OnTriggerStay(Collider other)
 		{
 			if (!CollisionLayers.Contains(other.gameObject.layer)) return;
 			if (enabled) OnStayTrigger?.Invoke(this, other);
 		}
+		#endif
 
 		private void OnTriggerExit(Collider other)
 		{
@@ -109,6 +111,7 @@ namespace Barliesque.Utils
 			}
 		}
 
+#if SENSOR_STAY
 		private void OnCollisionStay(Collision collision)
 		{
 #if UNITY_2021_1_OR_NEWER
@@ -120,6 +123,7 @@ namespace Barliesque.Utils
 			if (!CollisionLayers.Contains(bodyGO.layer)) return;
 			if (enabled) OnStayCollision?.Invoke(this, collision);
 		}
+#endif
 
 		private void OnCollisionExit(Collision collision)
 		{
