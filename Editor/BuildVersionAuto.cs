@@ -31,7 +31,7 @@ public class BuildVersionAuto : IPreprocessBuildWithReport
 		string[] guids = AssetDatabase.FindAssets($"t:{typeof(GaugeString)}");
 		foreach (var guid in guids)
 		{
-			string path = AssetDatabase.GUIDToAssetPath(guids[0]);
+			string path = AssetDatabase.GUIDToAssetPath(guid);
 			var buildDateTime = AssetDatabase.LoadAssetAtPath<GaugeString>(path);
 			if (buildDateTime.name != "BuildDateTime") continue;
 			if (!buildDateTime.IsPersistent) Debug.LogError($"Could not store BuildDateTime because Gauge is not Persistent: {path}");
