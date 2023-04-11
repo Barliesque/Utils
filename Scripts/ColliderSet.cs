@@ -109,6 +109,8 @@ namespace Barliesque.Utils
 			return null;
 		}
 
+		public int BodyCount => _colliderCount.Count;
+		
 		public bool ContainsBody(Rigidbody body)
 		{
 			return _colliderCount.ContainsKey(body);

@@ -37,6 +37,9 @@ namespace Barliesque.Utils
 		private ColliderSet _triggered;
 		private ColliderSet _collided;
 
+		public int TriggerBodyCount => _triggered.BodyCount;
+		public int CollisionBodyCount => _collided.BodyCount;
+		
 		/// <summary>If true, collision with bodies containing multiple colliders will only trigger a single enter/exit event, rather than an event for each collider.</summary>
 		public bool OncePerBody
 		{
@@ -89,7 +92,7 @@ namespace Barliesque.Utils
 			if (!enabled) return;
 			
 #if UNITY_2021_1_OR_NEWER
-			var bodyGO = collision.body.gameObject;
+			var bodyGO = collision.body ? collision.body.gameObject : collision.collider.gameObject;
 #else
 			var bodyGO = collision.gameObject.GetComponentInParent<Rigidbody>().gameObject;
 #endif
@@ -115,7 +118,7 @@ namespace Barliesque.Utils
 		private void OnCollisionStay(Collision collision)
 		{
 #if UNITY_2021_1_OR_NEWER
-			var bodyGO = collision.body.gameObject;
+			var bodyGO = collision.body ? collision.body.gameObject : collision.collider.gameObject;
 #else
 			var bodyGO = collision.gameObject.GetComponentInParent<Rigidbody>().gameObject;
 #endif
@@ -130,7 +133,7 @@ namespace Barliesque.Utils
 			if (!enabled) return;
 			
 #if UNITY_2021_1_OR_NEWER
-			var bodyGO = collision.body.gameObject;
+			var bodyGO = collision.body ? collision.body.gameObject : collision.collider.gameObject;
 #else
 			var bodyGO = collision.gameObject.GetComponentInParent<Rigidbody>().gameObject;
 #endif
