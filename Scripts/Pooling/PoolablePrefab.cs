@@ -44,7 +44,7 @@ namespace Barliesque.Utils
 
 		private void OnDisable()
 		{
-			if (_recycling is Recycling.Timed or Recycling.OnDisable) StopAllCoroutines();
+			if (_recycling == Recycling.Timed || _recycling == Recycling.OnDisable) StopAllCoroutines();
 			if (_recycling == Recycling.OnDisable) RecycleNextFrame();
 		}
 		
