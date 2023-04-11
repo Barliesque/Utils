@@ -9,9 +9,14 @@ namespace Barliesque.Utils
 	{
 		public delegate void Callback(float t);
 		
-		static public Coroutine Play(this MonoBehaviour owner, float duration, Callback callback, bool scaledTime = false)
+		static public Coroutine Play(this MonoBehaviour owner, float duration, Callback callback)
 		{
-			return owner.StartCoroutine(PlayFunction(duration, callback, scaledTime));
+			return owner.StartCoroutine(PlayFunction(duration, callback, true));
+		}
+		
+		static public Coroutine PlayUnscaled(this MonoBehaviour owner, float duration, Callback callback)
+		{
+			return owner.StartCoroutine(PlayFunction(duration, callback, false));
 		}
 
 		static private IEnumerator PlayFunction(float duration, Callback callback, bool scaledTime)
@@ -28,9 +33,14 @@ namespace Barliesque.Utils
 
 		public delegate void Callback<T>(float t, T value);
 
-		static public Coroutine Play<T>(this MonoBehaviour owner, float duration, Callback<T> callback, T value, bool scaledTime = false)
+		static public Coroutine Play<T>(this MonoBehaviour owner, float duration, Callback<T> callback, T value)
 		{
-			return owner.StartCoroutine(PlayFunction(duration, callback, value, scaledTime));
+			return owner.StartCoroutine(PlayFunction(duration, callback, value, true));
+		}
+
+		static public Coroutine PlayUnscaled<T>(this MonoBehaviour owner, float duration, Callback<T> callback, T value)
+		{
+			return owner.StartCoroutine(PlayFunction(duration, callback, value, false));
 		}
 
 		static private IEnumerator PlayFunction<T>(float duration, Callback<T> callback, T value, bool scaledTime)
@@ -47,9 +57,14 @@ namespace Barliesque.Utils
 		
 		public delegate void Callback<in T, in U>(float t, T value1, U value2);
 		
-		static public Coroutine Play<T,U>(this MonoBehaviour owner, float duration, Callback<T,U> callback, T value1, U value2, bool scaledTime = false)
+		static public Coroutine Play<T,U>(this MonoBehaviour owner, float duration, Callback<T,U> callback, T value1, U value2)
 		{
-			return owner.StartCoroutine(PlayFunction(duration, callback, value1, value2, scaledTime));
+			return owner.StartCoroutine(PlayFunction(duration, callback, value1, value2, true));
+		}
+		
+		static public Coroutine PlayUnscaled<T,U>(this MonoBehaviour owner, float duration, Callback<T,U> callback, T value1, U value2)
+		{
+			return owner.StartCoroutine(PlayFunction(duration, callback, value1, value2, false));
 		}
 
 		static private IEnumerator PlayFunction<T,U>(float duration, Callback<T,U> callback, T value1, U value2, bool scaledTime)
@@ -59,25 +74,6 @@ namespace Barliesque.Utils
 			{
 				timer += scaledTime ? Time.deltaTime : Time.unscaledDeltaTime;
 				callback(Mathf.Clamp01(timer / duration), value1, value2);
-				yield return null;
-			} while (timer < duration);
-		}
-		
-		
-		public delegate void Callback<in T, in U, in V>(float t, T value1, U value2, V value3);
-		
-		static public Coroutine Play<T,U,V>(this MonoBehaviour owner, float duration, Callback<T,U,V> callback, T value1, U value2, V value3, bool scaledTime = false)
-		{
-			return owner.StartCoroutine(PlayFunction(duration, callback, value1, value2, value3, scaledTime));
-		}
-
-		static private IEnumerator PlayFunction<T,U,V>(float duration, Callback<T,U,V> callback, T value1, U value2, V value3, bool scaledTime)
-		{
-			var timer = 0f;
-			do
-			{
-				timer += scaledTime ? Time.deltaTime : Time.unscaledDeltaTime;
-				callback(Mathf.Clamp01(timer / duration), value1, value2, value3);
 				yield return null;
 			} while (timer < duration);
 		}
