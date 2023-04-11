@@ -10,7 +10,7 @@ using UnityEngine;
 public class BuildVersionAuto : IPreprocessBuildWithReport
 {
 	public int callbackOrder => 0;
-	
+
 	public void OnPreprocessBuild(BuildReport report)
 	{
 		var parts = PlayerSettings.bundleVersion.Split('.');
@@ -26,8 +26,13 @@ public class BuildVersionAuto : IPreprocessBuildWithReport
 		{
 			PlayerSettings.bundleVersion = $"{PlayerSettings.bundleVersion}.1";
 		}
+
+#if UNITY_ANDROID
+		++PlayerSettings.Android.bundleVersionCode;
+#endif
+
 		Debug.Log($"PlayerSettings.bundleVersion updated to:  {PlayerSettings.bundleVersion}");
-		
+
 		string[] guids = AssetDatabase.FindAssets($"t:{typeof(GaugeString)}");
 		foreach (var guid in guids)
 		{
@@ -40,7 +45,5 @@ public class BuildVersionAuto : IPreprocessBuildWithReport
 			key.Dispose();
 			EditorUtility.SetDirty(buildDateTime);
 		}
-		
 	}
-	
 }
