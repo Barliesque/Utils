@@ -350,6 +350,14 @@ namespace Barliesque.Utils
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		static private float FastNegExp(float x) => 1f / (1f + x + 0.48f * x * x + 0.235f * x * x * x);
+
+		static public float InverseLerp3D(Vector3 a, Vector3 b, Vector3 value)
+		{
+			var ab = b - a;
+			var av = value - a;
+			return Vector3.Dot(av, ab) / Vector3.Dot(ab, ab);
+		}
 		
 	}
+	
 }
