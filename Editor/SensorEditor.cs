@@ -58,7 +58,8 @@ namespace Barliesque.Utils.Editor
 			{
 				if (!body)
 				{
-					EditorTools.HelpBox("This Sensor will only respond to colliders that have a Rigidbody.  To respond to all colliders, add a Rigidbody to <b>this</b> GameObject.", MessageType.Info);
+					EditorTools.HelpBox("This Sensor can not respond without a Rigidbody on <b>this</b> GameObject.", MessageType.Error);
+					//EditorTools.HelpBox("This Sensor will only respond to colliders that have a Rigidbody.  To respond to all colliders, add a Rigidbody to <b>this</b> GameObject.", MessageType.Info);
 				}
 				if (gotTrigger && gotCollision)
 				{
@@ -104,7 +105,7 @@ namespace Barliesque.Utils.Editor
 				{
 					var help = new StringBuilder();
 					help.Append("• Both objects must have at least one collider.\n");
-					help.Append("• At least one of the objects must have a Rigidbody, and be non-kinematic and non-static.\n");
+					help.Append("• Both objects must have a Rigidbody, and at least one must be non-kinematic and non-static.\n");
 					help.Append("• Enable collision between two kinematic bodies: Project Settings » Physics » Contact Pairs Mode.\n");
 					help.Append("• Make sure their layers are enabled for collision in Project Settings » Physics.\n");
 					help.Append("• If either collider is a trigger, then trigger events are fired, not collision events.\n");
