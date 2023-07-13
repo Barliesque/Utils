@@ -198,6 +198,89 @@ namespace Barliesque.Utils
 			return (pos - seg).magnitude;
 		}
 
+		
+		/// <summary>
+		/// Calculate the distance to a line segment, squared.
+		/// </summary>
+		/// <param name="pos">Position to measure from</param>
+		/// <param name="segA">Point A of the segment</param>
+		/// <param name="segB">Point B of the segment</param>
+		/// <param name="nearest">The nearest point on the segment</param>
+		/// <returns>Returns the distance (squared) to the nearest point on the segment.</returns>
+		static public float DistToSegSqr(Vector2 pos, Vector2 segA, Vector2 segB, out Vector2 nearest)
+		{
+			var delta = segB - segA;
+			var segLenSqr = delta.sqrMagnitude;
+			var distA = pos - segA;
+
+			var t = Mathf.Clamp01((distA.x * delta.x + distA.y * delta.y) / segLenSqr);
+			var seg = new Vector2(segA.x + t * delta.x, segA.y + t * delta.y);
+
+			nearest = seg;
+			return (pos - seg).sqrMagnitude;
+		}
+
+		
+		/// <summary>
+		/// Calculate the distance to a line segment.
+		/// </summary>
+		/// <param name="pos">Position to measure from</param>
+		/// <param name="segA">Point A of the segment</param>
+		/// <param name="segB">Point B of the segment</param>
+		/// <param name="nearest">The nearest point on the segment</param>
+		/// <returns>Returns the distance (squared) to the nearest point on the segment.</returns>
+		static public float DistToSeg(Vector2 pos, Vector2 segA, Vector2 segB, out Vector2 nearest)
+		{
+			var delta = segB - segA;
+			var segLenSqr = delta.sqrMagnitude;
+			var distA = pos - segA;
+
+			var t = Mathf.Clamp01((distA.x * delta.x + distA.y * delta.y) / segLenSqr);
+			var seg = new Vector2(segA.x + t * delta.x, segA.y + t * delta.y);
+
+			nearest = seg;
+			return (pos - seg).magnitude;
+		}
+
+		
+		/// <summary>
+		/// Calculate the distance to a line segment, squared.
+		/// </summary>
+		/// <param name="pos">Position to measure from</param>
+		/// <param name="segA">Point A of the segment</param>
+		/// <param name="segB">Point B of the segment</param>
+		/// <returns>Returns the distance (squared) to the nearest point on the segment.</returns>
+		static public float DistToSegSqr(Vector2 pos, Vector2 segA, Vector2 segB)
+		{
+			var delta = segB - segA;
+			var segLenSqr = delta.sqrMagnitude;
+			var distA = pos - segA;
+
+			var t = Mathf.Clamp01((distA.x * delta.x + distA.y * delta.y) / segLenSqr);
+			var seg = new Vector2(segA.x + t * delta.x, segA.y + t * delta.y);
+
+			return (pos - seg).sqrMagnitude;
+		}
+
+		
+		/// <summary>
+		/// Calculate the distance to a line segment.
+		/// </summary>
+		/// <param name="pos">Position to measure from</param>
+		/// <param name="segA">Point A of the segment</param>
+		/// <param name="segB">Point B of the segment</param>
+		static public float DistToSeg(Vector2 pos, Vector2 segA, Vector2 segB)
+		{
+			var delta = segB - segA;
+			var segLenSqr = delta.sqrMagnitude;
+			var distA = pos - segA;
+
+			var t = Mathf.Clamp01((distA.x * delta.x + distA.y * delta.y) / segLenSqr);
+			var seg = new Vector2(segA.x + t * delta.x, segA.y + t * delta.y);
+
+			return (pos - seg).magnitude;
+		}
+
 		/// <summary> Calculates a smooth union between two values, rather than the hard limit of a traditional min() function. </summary>
 		/// <param name="a">First value</param>
 		/// <param name="b">Second value</param>
