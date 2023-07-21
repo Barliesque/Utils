@@ -47,7 +47,7 @@ namespace Barliesque.Utils.Editor
 
 			if (_stayEvents && !Physics.reuseCollisionCallbacks) 
 			{
-				EditorTools.HelpBox("SENSOR_STAY is enabled.  Consider enabling Physics.reuseCollisionCallbacks", MessageType.Warning);
+				EditorTools.HelpBox("SENSOR_STAY is enabled, but Physics.reuseCollisionCallbacks is not enabled!", MessageType.Warning);
 			}
 			
 			if (_colliders.Count == 0)

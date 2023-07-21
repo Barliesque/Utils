@@ -116,6 +116,15 @@ namespace Barliesque.Utils
 			return _colliderCount.ContainsKey(body);
 		}
 
+		public bool ContainsTag(string tag)
+		{
+			foreach (var item in _bodies)
+			{
+				if (item.Key.CompareTag(tag)) return true;
+			}
+			return false;
+		}
+
 		public void Clear()
 		{
 			_colliderCount.Clear();

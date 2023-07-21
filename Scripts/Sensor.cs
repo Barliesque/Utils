@@ -27,18 +27,25 @@ namespace Barliesque.Utils
 		[Flags] public enum SensorEventType { Trigger = 1, Collision = 2 }
 		
 		public TriggerHandler OnEnterTrigger = new TriggerHandler();
-		public TriggerHandler OnStayTrigger = new TriggerHandler();
 		public TriggerHandler OnExitTrigger = new TriggerHandler();
-
 		public CollisionHandler OnEnterCollision = new CollisionHandler();
-		public CollisionHandler OnStayCollision = new CollisionHandler();
 		public CollisionHandler OnExitCollision = new CollisionHandler();
+		
+#if !SENSOR_STAY
+		/// <summary> This event will not be invoked unless SENSOR_STAY is added to compiler constants. </summary>
+#endif
+		public TriggerHandler OnStayTrigger = new TriggerHandler();
+#if !SENSOR_STAY
+		/// <summary> This event will not be invoked unless SENSOR_STAY is added to compiler constants. </summary>
+#endif
+		public CollisionHandler OnStayCollision = new CollisionHandler();
+		
 
-		private ColliderSet _triggered;
-		private ColliderSet _collided;
+		public ColliderSet Triggers { get; private set; }
+		public ColliderSet Colliders { get; private set; }
 
-		public int TriggerBodyCount => _triggered.BodyCount;
-		public int CollisionBodyCount => _collided.BodyCount;
+		public int TriggerBodyCount => Triggers.BodyCount;
+		public int CollisionBodyCount => Colliders.BodyCount;
 		
 		/// <summary>If true, collision with bodies containing multiple colliders will only trigger a single enter/exit event, rather than an event for each collider.</summary>
 		public bool OncePerBody
@@ -58,8 +65,8 @@ namespace Barliesque.Utils
 		{
 			if (OncePerBody)
 			{
-				_triggered = new ColliderSet();
-				_collided = new ColliderSet();
+				Triggers = new ColliderSet();
+				Colliders = new ColliderSet();
 			}
 		}
 
@@ -67,7 +74,7 @@ namespace Barliesque.Utils
 		{
 			if (!enabled) return;
 			if (!CollisionLayers.Contains(other.gameObject.layer)) return;
-			if (OncePerBody && !_triggered.Enter(other)) return;
+			if (OncePerBody && !Triggers.Enter(other)) return;
 			OnEnterTrigger?.Invoke(this, other);
 		}
 
@@ -83,7 +90,7 @@ namespace Barliesque.Utils
 		{
 			if (!enabled) return;
 			if (!CollisionLayers.Contains(other.gameObject.layer)) return;
-			if (OncePerBody && !_triggered.Exit(other)) return;
+			if (OncePerBody && !Triggers.Exit(other)) return;
 			OnExitTrigger?.Invoke(this, other);
 		}
 
@@ -107,7 +114,7 @@ namespace Barliesque.Utils
 			bool invoked = false;
 			foreach (var hit in collision.contacts)
 			{
-				if (!_collided.Enter(hit.otherCollider)) continue;
+				if (!Colliders.Enter(hit.otherCollider)) continue;
 				if (invoked) continue;
 				OnEnterCollision?.Invoke(this, collision);
 				invoked = true;
@@ -147,7 +154,7 @@ namespace Barliesque.Utils
 			bool invoked = false;
 			foreach (var hit in collision.contacts)
 			{
-				if (!_collided.Exit(hit.otherCollider)) continue;
+				if (!Colliders.Exit(hit.otherCollider)) continue;
 				if (invoked) continue;
 				OnExitCollision?.Invoke(this, collision);
 				invoked = true;
