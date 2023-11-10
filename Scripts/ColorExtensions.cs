@@ -27,6 +27,13 @@ namespace Barliesque.Utils
 		{
 			return $"#{color.r:X2}{color.g:X2}{color.b:X2}";
 		}
+
+		static public Color ToGrayscale(this Color color, float strength = 1f)
+		{
+			var luminance = color.r * 0.299f + color.g * 0.587f + color.b * 0.114f;
+			var bw = new Color(luminance, luminance, luminance, color.a);
+			return Color.Lerp(color, bw, strength);
+		}
 		
 	}
 	
