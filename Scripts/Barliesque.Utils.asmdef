@@ -2,7 +2,8 @@
     "name": "Barliesque.Utils",
     "rootNamespace": "",
     "references": [
-        "GUID:e2231c579fc13c0438fa7f5353cc67f6"
+        "Barliesque.InspectorTools",
+        "Trinary.MEC"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
