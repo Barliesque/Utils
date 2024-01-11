@@ -40,9 +40,12 @@ public class BuildVersionAuto : IPreprocessBuildWithReport
 			var buildDateTime = AssetDatabase.LoadAssetAtPath<GaugeString>(path);
 			if (buildDateTime.name != "BuildDateTime") continue;
 			if (!buildDateTime.IsPersistent) Debug.LogError($"Could not store BuildDateTime because Gauge is not Persistent: {path}");
-			var key = buildDateTime.CreateKey(null, null);
-			key.Value = DateTime.Now.ToString("g");
-			key.Dispose();
+
+			var serialized = new SerializedObject(buildDateTime);
+			var now = DateTime.Now.ToString("g");
+			serialized.FindProperty("_default").stringValue = now;
+			serialized.FindProperty("_current").stringValue = now;
+			serialized.ApplyModifiedProperties();
 			EditorUtility.SetDirty(buildDateTime);
 		}
 	}
