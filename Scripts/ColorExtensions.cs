@@ -34,6 +34,11 @@ namespace Barliesque.Utils
 			var bw = new Color(luminance, luminance, luminance, color.a);
 			return Color.Lerp(color, bw, strength);
 		}
+
+		static public Color Inverse(this Color color)
+		{
+			return new Color(1f - color.r, 1f - color.g, 1f - color.b, color.a);
+		}
 		
 	}
 	
