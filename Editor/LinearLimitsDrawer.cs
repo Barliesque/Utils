@@ -1,14 +1,24 @@
-﻿using Barliesque.Utils;
-using UnityEngine;
+﻿using Barliesque.InspectorTools.Editor;
 using UnityEditor;
-using UnityEngine.UIElements;
-using UnityEditor.UIElements;
+// using UnityEngine;
+// using UnityEngine.UIElements;
+// using UnityEditor.UIElements;
 
-namespace HandsOnVR.Editor
+namespace Barliesque.Utils.Editor
 {
+	
 	[CustomPropertyDrawer(typeof(LinearLimits))]
-	public class LinearLimitsDrawer : PropertyDrawer
+	public class LinearLimitsDrawer : PropertyDrawerHelper
 	{
+		override public void CustomDrawer()
+		{
+			var width = _position.width * 0.5f - 26f;
+			Field(width, "Start");
+			Label(16f, "to");
+			Field(width, "End");
+		}
+		
+		/*
 		override public VisualElement CreatePropertyGUI(SerializedProperty property)
 		{
 			// Create property container element.
@@ -54,5 +64,6 @@ namespace HandsOnVR.Editor
 
 			EditorGUI.EndProperty();
 		}
+		*/
 	}
 }
