@@ -21,6 +21,7 @@ namespace Barliesque.Utils
 
 		public bool IsInside(float value) => (Start < End) ? (value >= Start && value <= End) : (value <= Start && value >= End);
 		public float Clamp(float value) => (Start < End) ? Mathf.Clamp(value, Start, End) : Mathf.Clamp(value, End, Start);
+		public float Wrap(float value) => ((value + Range - Start) % Range) + Start;
 		public float Range => End - Start;
 		public float Lerp(float t) => Mathf.Lerp(Start, End, t);
 		public float LerpUnclamped(float t) => Mathf.LerpUnclamped(Start, End, t);
