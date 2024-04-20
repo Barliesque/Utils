@@ -40,6 +40,11 @@ namespace Barliesque.Utils
 			return new Color(1f - color.r, 1f - color.g, 1f - color.b, color.a);
 		}
 		
+		static public Color Saturate(this Color color)
+		{
+			return new Color(Mathf.Clamp01(color.r), Mathf.Clamp01(color.g), Mathf.Clamp01(color.b), Mathf.Clamp01(color.a));
+		}
+		
 	}
 	
 }
