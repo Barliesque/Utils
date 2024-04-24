@@ -27,8 +27,8 @@ namespace Barliesque.Utils
 			// Add the new velocity, and remove the oldest
 			smoothed += sample - _samples[old];
 			// Store the new sample and move on to the next
-			_samples[_sampleIndex] = sample;
 			_sampleIndex = old;
+			_samples[_sampleIndex] = sample;
 		}
 
 		public void Reset(float value = default)
@@ -42,6 +42,8 @@ namespace Barliesque.Utils
 		}
 
 		public float smoothed { get; private set; }
+		public float newest => _samples[_sampleIndex];
+		public float oldest => _samples[(_sampleIndex + 1) % _samples.Length];
 
 	}
 

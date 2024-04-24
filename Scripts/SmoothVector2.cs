@@ -27,8 +27,8 @@ namespace Barliesque.Utils
 			// Add the new velocity, and remove the oldest
 			smoothed += sample - _samples[old];
 			// Store the new sample and move on to the next
-			_samples[_sampleIndex] = sample;
 			_sampleIndex = old;
+			_samples[_sampleIndex] = sample;
 		}
 
 		public void Reset(Vector2 value = default)
@@ -42,5 +42,7 @@ namespace Barliesque.Utils
 		}
 
 		public Vector2 smoothed { get; private set; }
+		public Vector2 newest => _samples[_sampleIndex];
+		public Vector2 oldest => _samples[(_sampleIndex + 1) % _samples.Length];
 	}
 }

@@ -47,8 +47,8 @@ namespace Barliesque.Utils
 			// Invalidate smoothed value
 			_dirty = true;
 			// Store the new sample and move on to the next
-			_samples[_sampleIndex] = sample;
 			_sampleIndex = old;
+			_samples[_sampleIndex] = sample;
 		}
 
 		public void Reset()
@@ -71,6 +71,9 @@ namespace Barliesque.Utils
 				return _smoothed;
 			}
 		}
+		
+		public Quaternion newest => _samples[_sampleIndex].ToQuaternion();
+		public Quaternion oldest => _samples[(_sampleIndex + 1) % _samples.Length].ToQuaternion();
 
 	}
 	
