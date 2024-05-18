@@ -1,13 +1,33 @@
-﻿using Barliesque.Utils;
-using UnityEngine;
+﻿using Barliesque.InspectorTools.Editor;
+using Barliesque.Utils;
 using UnityEditor;
-using UnityEngine.UIElements;
-using UnityEditor.UIElements;
 
 namespace HandsOnVR.Editor
 {
 	[CustomPropertyDrawer(typeof(AngularLimits))]
-	public class AngularLimitsDrawer : PropertyDrawer
+
+	public class AngularLimitsDrawer : PropertyDrawerHelper
+	{
+		override public void CustomDrawer()
+		{
+			var width = (_position.width - 100f) * 0.5f;
+			Field(width, "_start");
+			Label(16f, "to");
+			Field(width, "_end");
+			Label(32, "CCW", "Is the angular range specified in counter-clockwise order?  Angular values increase travelling counter-clockwise.  This option can be used to invert the angular range.");
+			Field(16f, "CCW");
+		}
+	}
+	
+	
+	
+/*
+	 
+// using UnityEngine;
+// using UnityEngine.UIElements;
+// using UnityEditor.UIElements;
+	 
+	public class _AngularLimitsDrawer : PropertyDrawer
 	{
 		override public VisualElement CreatePropertyGUI(SerializedProperty property)
 		{
@@ -67,4 +87,5 @@ namespace HandsOnVR.Editor
 			EditorGUI.EndProperty();
 		}
 	}
+	*/
 }
