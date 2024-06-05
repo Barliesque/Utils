@@ -35,7 +35,7 @@ namespace Barliesque.Utils
 		}
 
 
-		static public Quaternion SmoothDamp(Quaternion rot, Quaternion target, ref Quaternion velocity, float deltaTime)
+		static public Quaternion SmoothDamp(Quaternion rot, Quaternion target, ref Quaternion velocity, float smoothTime, float maxSpeed = Mathf.Infinity)
 		{
 			// Account for double-cover
 			if (Quaternion.Dot(rot, target) < 0f)
@@ -48,10 +48,38 @@ namespace Barliesque.Utils
 
 			// Smooth damp (nlerp approx)
 			var result = new Vector4(
-				Mathf.SmoothDamp(rot.x, target.x, ref velocity.x, deltaTime),
-				Mathf.SmoothDamp(rot.y, target.y, ref velocity.y, deltaTime),
-				Mathf.SmoothDamp(rot.z, target.z, ref velocity.z, deltaTime),
-				Mathf.SmoothDamp(rot.w, target.w, ref velocity.w, deltaTime)
+				Mathf.SmoothDamp(rot.x, target.x, ref velocity.x, smoothTime, maxSpeed),
+				Mathf.SmoothDamp(rot.y, target.y, ref velocity.y, smoothTime, maxSpeed),
+				Mathf.SmoothDamp(rot.z, target.z, ref velocity.z, smoothTime, maxSpeed),
+				Mathf.SmoothDamp(rot.w, target.w, ref velocity.w, smoothTime, maxSpeed)
+			).normalized;
+
+			// Compute deriv
+			var dtInv = 1f / Time.deltaTime;
+			velocity.x = (result.x - rot.x) * dtInv;
+			velocity.y = (result.y - rot.y) * dtInv;
+			velocity.z = (result.z - rot.z) * dtInv;
+			velocity.w = (result.w - rot.w) * dtInv;
+			return new Quaternion(result.x, result.y, result.z, result.w);
+		}
+
+		static public Quaternion SmoothDampUnscaled(Quaternion rot, Quaternion target, ref Quaternion velocity, float smoothTime, float maxSpeed = Mathf.Infinity)
+		{
+			// Account for double-cover
+			if (Quaternion.Dot(rot, target) < 0f)
+			{
+				target.x *= -1f;
+				target.y *= -1f;
+				target.z *= -1f;
+				target.w *= -1f;
+			}
+
+			// Smooth damp (nlerp approx)
+			var result = new Vector4(
+				Mathf.SmoothDamp(rot.x, target.x, ref velocity.x, smoothTime, maxSpeed, Time.unscaledDeltaTime),
+				Mathf.SmoothDamp(rot.y, target.y, ref velocity.y, smoothTime, maxSpeed, Time.unscaledDeltaTime),
+				Mathf.SmoothDamp(rot.z, target.z, ref velocity.z, smoothTime, maxSpeed, Time.unscaledDeltaTime),
+				Mathf.SmoothDamp(rot.w, target.w, ref velocity.w, smoothTime, maxSpeed, Time.unscaledDeltaTime)
 			).normalized;
 
 			// Compute deriv
