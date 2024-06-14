@@ -11,8 +11,44 @@ public class BuildVersionAuto : IPreprocessBuildWithReport
 {
 	public int callbackOrder => 0;
 
+	private const string _menuPath = "Tools/Auto Increment Build Number";
+	private const string _editorPrefsKey = "AutoIncrementBuildNumber";
+
+
+	static private bool IsEnabled => EditorPrefs.GetBool(_editorPrefsKey);
+
+	[MenuItem(_menuPath, false, 10)]
+	static private void ToggleEnabled()
+	{
+		var toggled = !IsEnabled;
+		EditorPrefs.SetBool(_editorPrefsKey, toggled);
+		Menu.SetChecked(_menuPath, toggled);
+	}
+
+	[MenuItem(_menuPath, true)]
+	static private bool SettingValidate()
+	{
+		var enabled = EditorPrefs.GetBool(_editorPrefsKey, true);
+		Menu.SetChecked(_menuPath, enabled);
+		return true;
+	}
+
+	[InitializeOnLoadMethod]
+	static private void AlertIfDisabled()
+	{
+		if (IsEnabled) return;
+		Debug.Log($"<color=yellow>Auto Incrementing Build Number is disabled.</color>  To enable, go to: {_menuPath}");
+	}
+	
+
 	public void OnPreprocessBuild(BuildReport report)
 	{
+		if (!IsEnabled)
+		{
+			Debug.Log($"<color=yellow>Auto Incrementing Build Number is disabled.</color>  To enable, go to: {_menuPath}");
+			return;
+		}
+		
 		var parts = PlayerSettings.bundleVersion.Split('.');
 		if (parts == null || parts.Length == 0) parts = new[] { "0", "0", "0" };
 		var digit = parts.Length - 1;
@@ -49,4 +85,5 @@ public class BuildVersionAuto : IPreprocessBuildWithReport
 			EditorUtility.SetDirty(buildDateTime);
 		}
 	}
+	
 }
