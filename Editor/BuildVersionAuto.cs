@@ -65,9 +65,10 @@ public class BuildVersionAuto : IPreprocessBuildWithReport
 
 #if UNITY_ANDROID
 		++PlayerSettings.Android.bundleVersionCode;
+		Debug.Log($"<color=cyan>PlayerSettings.bundleVersion updated to:  {PlayerSettings.bundleVersion} ({PlayerSettings.Android.bundleVersionCode})</color>");
+#else
+		Debug.Log($"<color=cyan>PlayerSettings.bundleVersion updated to:  {PlayerSettings.bundleVersion}</color>");
 #endif
-
-		Debug.Log($"PlayerSettings.bundleVersion updated to:  {PlayerSettings.bundleVersion}");
 
 		string[] guids = AssetDatabase.FindAssets($"t:{typeof(GaugeString)}");
 		foreach (var guid in guids)
