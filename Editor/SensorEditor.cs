@@ -29,7 +29,7 @@ namespace Barliesque.Utils.Editor
 		override protected void CustomInspector(Sensor inst)
 		{
 			inst.GetComponents<Collider>(_colliders);
-			bool body = inst.GetComponent<Rigidbody>();
+			var body = inst.GetComponent<Rigidbody>();
 			bool gotTrigger = false;
 			bool gotCollision = false;
 			for (int i = 0; i < _colliders.Count; i++)
@@ -58,7 +58,12 @@ namespace Barliesque.Utils.Editor
 			{
 				if (!body)
 				{
-					EditorTools.HelpBox("This Sensor can not respond without a Rigidbody on <b>this</b> GameObject.", MessageType.Error);
+					if (EditorTools.HelpBox("This Sensor can not respond without a Rigidbody on <b>this</b> GameObject.", MessageType.Error))
+					{
+						body = Undo.AddComponent<Rigidbody>(inst.gameObject);
+						body.isKinematic = inst.gameObject.isStatic;
+						body.useGravity = !inst.gameObject.isStatic;
+					}
 					//EditorTools.HelpBox("This Sensor will only respond to colliders that have a Rigidbody.  To respond to all colliders, add a Rigidbody to <b>this</b> GameObject.", MessageType.Info);
 				}
 				if (gotTrigger && gotCollision)
