@@ -32,7 +32,7 @@ namespace Barliesque.Utils
 		/// </summary>
 		public float Random() => Mathf.Lerp(Start, End, UnityEngine.Random.value);
 
-		override public string ToString() => $"[LinearLimits: Low={Start} High={End}]";
+		override public string ToString() => $"[LinearLimits: Start={Start} End={End}]";
 
 	}
 }
