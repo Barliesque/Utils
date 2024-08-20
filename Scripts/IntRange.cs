@@ -16,18 +16,34 @@ namespace Barliesque.Utils
 			End = end;
 		}
 
+		/// <summary>
+		/// Is the specified value within this range?  (Range is inclusive)
+		/// </summary>
 		public bool IsInside(int value) => (Start < End) ? (value >= Start && value <= End) : (value <= Start && value >= End);
+		
+		/// <summary>
+		/// Clamp the specified value to this range  (Range is inclusive)
+		/// </summary>
 		public int Clamp(int value) => (Start < End) ? Mathf.Clamp(value, Start, End) : Mathf.Clamp(value, End, Start);
-		public int Wrap(int value) => ((value + Range - Start) % Range) + Start;
-		public int Range => End - Start;
+
+		/// <summary>
+		/// Wrap the specified value to this range  (Range is inclusive)
+		/// </summary>
+		public int Wrap(int value) => value < Start ? (End + 1 - (Start - value) % (End + 1 - Start)) : (Start + (value - Start) % (End + 1 - Start));
+			
+		/// <summary>
+		/// How many values are encompassed by this range?  If Start and End are equal, this will be 1.
+		/// </summary>
+		public int Range => Mathf.Abs(End + (End >= 0 ? 1 : -1) - Start);
+		
 		public int Lerp(float t) => Mathf.RoundToInt(Mathf.Lerp(Start, End, t));
 		public int LerpUnclamped(float t) => Mathf.RoundToInt(Mathf.LerpUnclamped(Start, End, t));
 		public float InverseLerp(int value) => Mathf.InverseLerp(Start, End, value);
 
 		/// <summary>
-		/// Get a random value within the specified limits.
+		/// Get a random value within this range  (Range is inclusive)
 		/// </summary>
-		public int Random() => Mathf.RoundToInt(Mathf.Lerp(Start, End, UnityEngine.Random.value));
+		public int Random() => Mathf.Min(Mathf.FloorToInt(Mathf.Lerp(Start, End + 1, UnityEngine.Random.value)), End);
 
 		override public string ToString() => $"[IntRange: Start={Start} End={End}]";
 
