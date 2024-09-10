@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Barliesque.Utils
 {
@@ -34,6 +35,37 @@ namespace Barliesque.Utils
 		{
 			return go.transform.GetPath(separator);
 		}
+
+		/// <summary>
+		/// Sets the layer of this and all child GameObjects.
+		/// </summary>
+		/// <param name="go"></param>
+		/// <param name="layer"></param>
+		static public void SetLayer(this GameObject go, int layer)
+		{
+			var xforms = new Stack<Transform>();
+			xforms.Push(go.transform);
+			while (xforms.Count > 0)
+			{
+				var xform = xforms.Pop();
+				xform.gameObject.layer = layer;
+				for (int i = 0, len = xform.childCount; i < len; i++)
+				{
+					xforms.Push(xform.GetChild(i));
+				}
+			}
+		}
+
+		/// <summary>
+		/// Sets the layer of this and all child GameObjects.
+		/// </summary>
+		/// <param name="go"></param>
+		/// <param name="layer"></param>
+		static public void SetLayer(this GameObject go, string layer)
+		{
+			SetLayer(go, LayerMask.NameToLayer(layer));
+		}
+		
 
 	}
 
