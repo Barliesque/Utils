@@ -21,6 +21,33 @@ namespace Barliesque.Utils
 			}
 			return result;
 		}
+		
+		/// <summary>
+		/// Can any of the specified component types be found in this or a parent GameObject?
+		/// </summary>
+		static public bool IsComponentInParent(this Component here, params System.Type[] types)
+		{
+			foreach (var type in types)
+			{
+				if (here.GetComponentInParent(type, true)) return true;
+			}
+			return false;
+		}
+		
+		
+		/// <summary>
+		/// Can any of the specified component types be found on this GameObject?
+		/// </summary>
+		static public bool IsComponentPresent(this Component here, params System.Type[] types)
+		{
+			foreach (var type in types)
+			{
+				if (here.GetComponent(type)) return true;
+			}
+			return false;
+		}
+
+		
 
 	}
 
