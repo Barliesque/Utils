@@ -34,8 +34,8 @@ namespace Barliesque.Utils
 		/// <returns></returns>
 		static public Vector3 Random(float magnitude = 1f)
 		{
-			return new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f)).normalized *
-			       magnitude;
+			return UnityEngine.Random.onUnitSphere * magnitude;
+			// return new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f)).normalized * magnitude;
 		}
 
 		/// <summary>
@@ -61,6 +61,18 @@ namespace Barliesque.Utils
 		static public float Compare(Vector3 a, Vector3 b)
 		{
 			return Mathf.Clamp01(Vector3.Dot(a, b));
+		}
+
+		/// <summary>
+		/// Get a normalized direction vector from one position to another, as well as the distance between the points.
+		/// </summary>
+		/// <param name="from"></param>
+		/// <param name="to"></param>
+		/// <param name="distance"></param>
+		/// <returns></returns>
+		static public Vector3 Direction(Vector3 from, Vector3 to, out float distance)
+		{
+			return (to - from).Direction(out distance);
 		}
 
 	}

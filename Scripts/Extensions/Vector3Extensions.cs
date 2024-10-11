@@ -4,7 +4,18 @@ namespace Barliesque.Utils
 {
 	static public class Vector3Extensions
 	{
-		
+		/// <summary>
+		/// Get a normalized direction vector and the distance of the original vector.
+		/// </summary>
+		/// <param name="vector"></param>
+		/// <param name="distance"></param>
+		/// <returns></returns>
+		static public Vector3 Direction(this Vector3 vector, out float distance)
+		{
+			distance = vector.magnitude;
+			return vector / distance;
+		}
+
 		/// <summary>
 		/// Gets the value of a specified axis from this Vector3.
 		/// </summary>
@@ -45,10 +56,10 @@ namespace Barliesque.Utils
 		static public bool IsValid(this Vector3 vec3)
 		{
 //			return float.IsFinite(vec3.x) && float.IsFinite(vec3.y) && float.IsFinite(vec3.z);
-			return !(float.IsNaN(vec3.x) || float.IsNaN(vec3.y) || float.IsNaN(vec3.z) || 
+			return !(float.IsNaN(vec3.x) || float.IsNaN(vec3.y) || float.IsNaN(vec3.z) ||
 			         float.IsInfinity(vec3.x) || float.IsInfinity(vec3.y) || float.IsInfinity(vec3.z));
 		}
-		
+
 		/// <summary>
 		/// Calculate the distance to a line segment.  See Mathf2 for additional variations of this function.
 		/// </summary>
@@ -72,7 +83,5 @@ namespace Barliesque.Utils
 			if (isHalf) return pos.x * pos.y * pos.z * 8f;
 			return pos.x * pos.y * pos.z;
 		}
-
-		
 	}
 }
