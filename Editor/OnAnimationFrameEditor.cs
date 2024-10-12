@@ -2,7 +2,7 @@ using System;
 using UnityEditor;
 using Barliesque.InspectorTools.Editor;
 
-namespace Shattered.Editor
+namespace Barliesque.Utils.Editor
 {
 	
 	[CustomEditor(typeof(OnAnimationFrame))]
