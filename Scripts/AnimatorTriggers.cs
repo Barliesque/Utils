@@ -9,7 +9,7 @@ namespace Barliesque.Utils
 		public readonly Animator animator;
 		public bool LogChanges;
 		
-		private int _lastIndex;
+		public int LastIndex { get; private set; }
 
 		public AnimatorTriggers(Animator animator, params string[] names)
 		{
@@ -22,14 +22,14 @@ namespace Barliesque.Utils
 
 		public void SetNext()
 		{
-			Set((_lastIndex + 1) % ids.Length);
+			Set((LastIndex + 1) % ids.Length);
 		}
 
 		public void SetRandom()
 		{
 			var index = Random.Range(0, ids.Length);
 			// Reduce likelihood of repeat
-			if (index == _lastIndex) index = Random.Range(0, ids.Length);
+			if (index == LastIndex) index = Random.Range(0, ids.Length);
 			Set(index);
 		}
 		
@@ -37,14 +37,14 @@ namespace Barliesque.Utils
 		{
 			if (LogChanges) Debug.Log($"{Names[index]}.Set()");
 			animator.SetTrigger(ids[index]);
-			_lastIndex = index;
+			LastIndex = index;
 		}
 
 		public void Reset()
 		{
 			if (LogChanges) Debug.Log($"({string.Join(',', Names)}).Reset()");
 			foreach (var id in ids) animator.ResetTrigger(id);
-			_lastIndex = -1;
+			LastIndex = -1;
 		}
 
 		override public string ToString()
