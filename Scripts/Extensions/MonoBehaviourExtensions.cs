@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using MEC;
 using UnityEngine;
@@ -95,6 +96,51 @@ namespace Barliesque.Utils
 				callback(Mathf.Clamp01(timer / duration), value1, value2);
 				yield return Timing.WaitForOneFrame;
 			} while (timer < duration);
+		}
+
+		/// <summary>
+		/// Invoke an action after a specified number of frames.  (Default: 1 frame)
+		/// </summary>
+		/// <param name="owner"></param>
+		/// <param name="action"></param>
+		/// <param name="frames"></param>
+		/// <returns></returns>
+		static public CoroutineHandle DoAfter(this MonoBehaviour owner, Action action, int frames = 1)
+		{
+			return Timing.RunCoroutine(DoAfterFrames(frames, action).CancelWith(owner));
+		}
+
+		/// <summary>
+		/// Invoke an action after a specified duration in seconds.
+		/// </summary>
+		/// <param name="owner"></param>
+		/// <param name="action"></param>
+		/// <param name="seconds"></param>
+		/// <param name="scaled"></param>
+		/// <returns></returns>
+		static public CoroutineHandle DoAfter(this MonoBehaviour owner, Action action, float seconds, bool scaled = true)
+		{
+			return Timing.RunCoroutine(DoAfterSeconds(seconds, scaled, action).CancelWith(owner));
+		}
+
+		static private IEnumerator<float> DoAfterSeconds(float seconds, bool scaled, Action action)
+		{
+			while (seconds > 0f)
+			{
+				yield return Timing.WaitForOneFrame;
+				seconds -= scaled ? Time.deltaTime : Time.unscaledDeltaTime;
+			}
+			action.Invoke();
+		}
+
+		static private IEnumerator<float> DoAfterFrames(int frames, Action action)
+		{
+			while (frames > 0)
+			{
+				yield return Timing.WaitForOneFrame;
+				--frames;
+			}
+			action.Invoke();
 		}
 		
 	}
