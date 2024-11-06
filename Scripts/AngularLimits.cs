@@ -66,7 +66,10 @@ namespace Barliesque.Utils
 			return CCW ? Mathf.Clamp(value, _start, _end) : Mathf.Clamp(value, _end, _start);
 		}
 
-		public float Range => RangeIsWrapped ? (360f - Mathf.Abs(_end - _start)) : Mathf.Abs(_end - _start);
+		public float Range => RangeIsWrapped ? Mathf.DeltaAngle(_start, _end) : Mathf.Abs(_end - _start);  //(360f - Mathf.Abs(_end - _start))
+
+		public float Center => _start + Mathf.DeltaAngle(_start, _end) * 0.5f;
+		
 
 		public float Normalize(float value)
 		{
