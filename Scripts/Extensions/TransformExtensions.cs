@@ -77,20 +77,26 @@ namespace Barliesque.Utils
 		}
 
 		/// <summary>
-		/// Turn (on the world-space Y-axis only) so that the Z-forward axis faces another Transform.
+		/// Turn (on the world-space Y-axis, and optionally the x-axis) so that the Z-forward axis faces another Transform.
 		/// </summary>
-		/// <param name="xform"></param>
-		/// <param name="subject"></param>
-		/// <param name="inverse"></param>
-		static public void TurnToFace(this Transform xform, Transform subject, bool inverse = false)
+		/// <param name="xform">This transform</param>
+		/// <param name="subject">The transform to face</param>
+		/// <param name="pitch">True to enable pitch rotation</param>
+		/// <param name="inverse">If true, then rotation will be to face away from the subject</param>
+		static public void TurnToFace(this Transform xform, Transform subject, bool pitch, bool inverse = false)
 		{
 			var subjectPos = subject.position;
 			var thisPos = xform.position;
 			var delta = inverse ? (thisPos - subjectPos) : (subjectPos - thisPos);
-			delta.y = 0f;
-			var norm = delta.normalized;
-			var angle = 90f - Mathf.Atan2(norm.z, norm.x) * Mathf.Rad2Deg;
-			xform.eulerAngles = new Vector3(0f, angle, 0f);
+			
+			var angleY = 90f - Mathf.Atan2(delta.z, delta.x) * Mathf.Rad2Deg;
+			var angleX = 0f;
+			if (pitch)
+			{
+				angleX = Mathf.Atan2(-delta.y, delta.magnitude) * Mathf.Rad2Deg;
+			}
+
+			xform.rotation = Quaternion.Euler(0f, angleY, 0f) * Quaternion.Euler(angleX, 0f, 0f);
 		}
 
 		static public string GetPath(this Transform xform, char separator='/')
