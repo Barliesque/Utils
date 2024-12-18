@@ -83,5 +83,8 @@ namespace Barliesque.Utils
 			if (isHalf) return pos.x * pos.y * pos.z * 8f;
 			return pos.x * pos.y * pos.z;
 		}
+
+		static public Vector2 xz(this Vector3 vec3) => new(vec3.x, vec3.z);
+
 	}
 }
