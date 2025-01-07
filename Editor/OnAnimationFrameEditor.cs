@@ -19,6 +19,7 @@ namespace Barliesque.Utils.Editor
 			EditorGUILayout.LabelField("Time", $"{seconds}:{frames:00}");
 
 			EditorGUILayout.Space();
+			PropertyField("_targetName");
 			PropertyField("_message");
 
 			EditorGUI.indentLevel++;
@@ -38,6 +39,9 @@ namespace Barliesque.Utils.Editor
 					break;
 				case OnAnimationFrame.ParamType.Animator:
 					EditorTools.HelpBox("A reference to this Animator will be passed.", MessageType.Info);
+					break;
+				case OnAnimationFrame.ParamType.Bool:
+					PropertyField("_boolParam", "Bool Value");
 					break;
 				default:
 					throw new ArgumentOutOfRangeException();

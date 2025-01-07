@@ -10,6 +10,9 @@ namespace Barliesque.Utils
 		[SerializeField] private int _frame;
 		[SerializeField] private int _fps = 30;
 
+		[Tooltip("Name of the target game object to send a message to--make sure it's unique!  If unassigned, the Animator GameObject is used.")]
+		[SerializeField] private string _targetName;
+		
 		[Tooltip("The name of a method to be called")]
 		[SerializeField] private string _message;
 
@@ -24,6 +27,7 @@ namespace Barliesque.Utils
 		[SerializeField] private bool _requireReceiver = true;
 
 		[SerializeField] private ParamType _parameterType;
+		[SerializeField] private bool _boolParam;
 		[SerializeField] private int _intParam;
 		[SerializeField] private float _floatParam;
 		[SerializeField] private string _stringParam;
@@ -34,11 +38,13 @@ namespace Barliesque.Utils
 			Int,
 			Float,
 			String,
-			Animator
+			Animator,
+			Bool
 		}
 
 		private float _time;
 		private bool _hasTriggered;
+		private GameObject _target;
 
 		// OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
 		override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -61,28 +67,36 @@ namespace Barliesque.Utils
 			_hasTriggered = true;
 
 			var options = _requireReceiver ? SendMessageOptions.RequireReceiver : SendMessageOptions.DontRequireReceiver;
+			if (!_target)
+			{
+				_target = string.IsNullOrEmpty(_targetName) ? animator.gameObject : GameObject.Find(_targetName);
+			}
 
 			switch (_parameterType)
 			{
 				case ParamType.None:
-					if (_sendUpwards) animator.gameObject.SendMessageUpwards(_message, options);
-					else animator.gameObject.SendMessage(_message, options);
+					if (_sendUpwards) _target.SendMessageUpwards(_message, options);
+					else _target.SendMessage(_message, options);
 					break;
 				case ParamType.Int:
-					if (_sendUpwards) animator.gameObject.SendMessageUpwards(_message, _intParam, options);
-					else animator.gameObject.SendMessage(_message, _intParam, options);
+					if (_sendUpwards) _target.SendMessageUpwards(_message, _intParam, options);
+					else _target.SendMessage(_message, _intParam, options);
 					break;
 				case ParamType.Float:
-					if (_sendUpwards) animator.gameObject.SendMessageUpwards(_message, _floatParam, options);
-					else animator.gameObject.SendMessage(_message, _floatParam, options);
+					if (_sendUpwards) _target.SendMessageUpwards(_message, _floatParam, options);
+					else _target.SendMessage(_message, _floatParam, options);
 					break;
 				case ParamType.String:
-					if (_sendUpwards) animator.gameObject.SendMessageUpwards(_message, _stringParam, options);
-					else animator.gameObject.SendMessage(_message, _stringParam, options);
+					if (_sendUpwards) _target.SendMessageUpwards(_message, _stringParam, options);
+					else _target.SendMessage(_message, _stringParam, options);
 					break;
 				case ParamType.Animator:
-					if (_sendUpwards) animator.gameObject.SendMessageUpwards(_message, animator, options);
-					else animator.gameObject.SendMessage(_message, animator, options);
+					if (_sendUpwards) _target.SendMessageUpwards(_message, animator, options);
+					else _target.SendMessage(_message, animator, options);
+					break;
+				case ParamType.Bool:
+					if (_sendUpwards) _target.SendMessageUpwards(_message, _boolParam, options);
+					else _target.SendMessage(_message, _boolParam, options);
 					break;
 				default:
 					throw new ArgumentOutOfRangeException();
