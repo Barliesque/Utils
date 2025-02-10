@@ -56,4 +56,59 @@ static public class IListExtensions
 			(list[i], list[swap]) = (list[swap], list[i]);
 		}
 	}
+	
+	/// <summary>
+	/// Retrieves and removes the first item of the list.
+	/// </summary>
+	static public T PopFirst<T>(this IList<T> list)
+	{
+		if (list.Count == 0) return default;
+		var first = list[0];
+		list.RemoveAt(0);
+		return first;
+	}
+	
+	/// <summary>
+	/// Retrieves and removes the first item of the list.  True is returned if successful.
+	/// </summary>
+	static public bool PopFirst<T>(this IList<T> list, out T first)
+	{
+		if (list.Count == 0)
+		{
+			first = default;
+			return false;
+		}
+		first = list[0];
+		list.RemoveAt(0);
+		return true;
+	}
+	
+	/// <summary>
+	/// Retrieves and removes the last item of the list.
+	/// </summary>
+	static public T PopLast<T>(this IList<T> list)
+	{
+		var index = list.Count - 1;
+		if (index < 0) return default;
+		var last = list[index];
+		list.RemoveAt(index);
+		return last;
+	}
+	
+	/// <summary>
+	/// Retrieves and removes the last item of the list.  True is returned if successful.
+	/// </summary>
+	static public bool PopLast<T>(this IList<T> list, out T last)
+	{
+		var index = list.Count - 1;
+		if (index < 0)
+		{
+			last = default;
+			return false;
+		}
+		last = list[index];
+		list.RemoveAt(index);
+		return true;
+	}
+
 }
