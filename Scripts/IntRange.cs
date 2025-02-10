@@ -19,7 +19,7 @@ namespace Barliesque.Utils
 		/// <summary>
 		/// Is the specified value within this range?  (Range is inclusive)
 		/// </summary>
-		public bool IsInside(int value) => (Start < End) ? (value >= Start && value <= End) : (value <= Start && value >= End);
+		public bool Contains(int value) => (Start < End) ? (value >= Start && value <= End) : (value <= Start && value >= End);
 		
 		/// <summary>
 		/// Clamp the specified value to this range  (Range is inclusive)
