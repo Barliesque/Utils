@@ -6,7 +6,7 @@ namespace Barliesque.Utils
 {
 
 	[Serializable]
-	public struct LinearLimits
+	public struct LinearLimits : IEquatable<LinearLimits>
 	{
 		[FormerlySerializedAs("Low")] public float Start;
 		[FormerlySerializedAs("High")] public float End;
@@ -35,5 +35,19 @@ namespace Barliesque.Utils
 
 		override public string ToString() => $"[LinearLimits: Start={Start} End={End}]";
 
+		public bool Equals(LinearLimits other)
+		{
+			return Start.Equals(other.Start) && End.Equals(other.End);
+		}
+
+		override public bool Equals(object obj)
+		{
+			return obj is LinearLimits other && Start.Equals(other.Start) && End.Equals(other.End);
+		}
+
+		override public int GetHashCode()
+		{
+			return HashCode.Combine(Start, End);
+		}
 	}
 }
