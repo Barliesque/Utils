@@ -26,6 +26,7 @@ namespace Barliesque.Utils
 		public float Lerp(float t) => Mathf.Lerp(Start, End, t);
 		public float LerpUnclamped(float t) => Mathf.LerpUnclamped(Start, End, t);
 		public float InverseLerp(float value) => Mathf.InverseLerp(Start, End, value);
+		public float InverseLerpUnclamped(float value) => (value - Start) / (End - Start);
 		public float Center => (Start + End) * 0.5f;
 		
 		/// <summary>
