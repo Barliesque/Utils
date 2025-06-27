@@ -14,22 +14,25 @@ namespace Barliesque.Utils
 		private bool _wasActive;
 		private float _threshold;
 		private float _heldTime;
+		private int _lastUpdated = -1;
+		private float _deadZone;
 
+		
 		/// <summary>
 		/// To enable logging, set this string which will be used as a prefix when logging.
 		/// </summary>
 		public string LogChanges = null;
-		
-		private int _lastUpdated = -1;
 
 
 		/// <summary>
 		/// Create a ButtonState to track the current state of a controller button
 		/// </summary>
 		/// <param name="threshold">The minimum analog value required for the button to be interpreted as active.</param>
-		public ButtonState(float threshold = 0.5f)
+		/// <param name="deadZone">Input values less than this will be stored as zero, to eliminate noise.</param>
+		public ButtonState(float threshold = 0.5f, float deadZone = 1e-4f)
 		{
 			_threshold = threshold;
+			_deadZone = deadZone;
 		}
 
 
@@ -39,18 +42,20 @@ namespace Barliesque.Utils
 		/// <param name="analog">The analog value of the button, from 0.0 to 1.0</param>
 		public void Update(float analog)
 		{
-			if (_lastUpdated != Time.frameCount)
+			// Do not allow _wasActive to be changed multiple times per frame
+			var newFrame = _lastUpdated != Time.frameCount; 
+			if (newFrame)
 			{
-				// Do not allow _wasActive to be changed multiple times per frame
 				_wasActive = IsActive;
 				_lastUpdated = Time.frameCount;
 			}
 			
-			_analog = analog;
+			// Apply a dead zone to avoid small noise values
+			_analog = (Mathf.Abs(analog) <= _deadZone) ? 0f : analog;
 
 			if (_wasActive && IsActive)
 			{
-				_heldTime += Time.unscaledDeltaTime;
+				if (newFrame) _heldTime += Time.unscaledDeltaTime;
 			}
 			else
 			{
@@ -70,9 +75,10 @@ namespace Barliesque.Utils
 		/// <param name="isActive">The current state of the button.</param>
 		public void Update(bool isActive)
 		{
-			if (_lastUpdated != Time.frameCount)
+			// Do not allow _wasActive to be changed multiple times per frame
+			var newFrame = _lastUpdated != Time.frameCount; 
+			if (newFrame)
 			{
-				// Do not allow _wasActive to be changed multiple times per frame
 				_wasActive = IsActive;
 				_lastUpdated = Time.frameCount;
 			}
@@ -81,7 +87,7 @@ namespace Barliesque.Utils
 
 			if (_wasActive && IsActive)
 			{
-				_heldTime += Time.unscaledDeltaTime;
+				if (newFrame) _heldTime += Time.unscaledDeltaTime;
 			}
 			else
 			{
