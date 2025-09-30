@@ -105,13 +105,13 @@ namespace Barliesque.Utils
 			{
 				if (_start < _end)
 				{
-					return 1f - (angle <= _start 
+					return 1f - Mathf.Clamp01(angle <= _start 
 						? Mathf.InverseLerp(_end - 360f, _start, angle) 
 						: Mathf.InverseLerp(_end, _start + 360f, angle));
 				}
 				else
 				{
-					return (angle <= _end 
+					return Mathf.Clamp01(angle <= _end 
 						? Mathf.InverseLerp(_start - 360f, _end, angle) 
 						: Mathf.InverseLerp(_start, _end + 360f, angle));
 				}
