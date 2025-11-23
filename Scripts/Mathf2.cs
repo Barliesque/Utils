@@ -455,7 +455,7 @@ namespace Barliesque.Utils
 			{
 				if (i % 2 == 0) factors.Add(i);
 			}
-			width = factors[(factors.Count >> 1) + (factors.Count % 2)];
+			width = factors[factors.Count >> 1];
 			height = elementCount / width;
 		}
         
