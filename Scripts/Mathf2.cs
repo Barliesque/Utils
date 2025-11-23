@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
@@ -441,6 +442,23 @@ namespace Barliesque.Utils
 			return Vector3.Dot(av, ab) / Vector3.Dot(ab, ab);
 		}
 		
+		/// <summary>
+		/// Determine optimal dimensions to fit any given number of elements.
+		/// </summary>
+		/// <param name="elementCount"></param>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+        static public void GetDimensions(int elementCount, out int width, out int height) 
+		{
+			var factors = new List<int>();
+			for(int i = 1; i <= elementCount; i++) 
+			{
+				if (i % 2 == 0) factors.Add(i);
+			}
+			width = factors[(factors.Count >> 1) + (factors.Count % 2)];
+			height = elementCount / width;
+		}
+        
 	}
 	
 }
