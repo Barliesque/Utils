@@ -111,5 +111,19 @@ namespace Barliesque.Utils
 			return path.ToString();
 		}
 		
+		static public Transform GetOrAddChild(this Transform xform, string name, Vector3 position = default, Quaternion rotation = default)
+		{
+			var child = xform.Find(name);
+			if (child) return child;
+			
+			var childGO = new GameObject(name);
+			child = childGO.transform;
+			child.SetParent(xform, false);
+			child.localPosition = position;
+			child.localRotation = rotation;
+			return child;
+		}
+
+		
 	}
 }

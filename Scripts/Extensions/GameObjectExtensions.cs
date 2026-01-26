@@ -31,6 +31,20 @@ namespace Barliesque.Utils
 		}
 		
 
+		static public GameObject GetOrAddChild(this GameObject go, string name, Vector3 position = default, Quaternion rotation = default)
+		{
+			var child = go.transform.Find(name);
+			if (child) return child.gameObject;
+			
+			var childGO = new GameObject(name);
+			child = childGO.transform;
+			child.SetParent(go.transform, false);
+			child.localPosition = position;
+			child.localRotation = rotation;
+			return childGO;
+		}
+		
+
 		static public string GetPath(this GameObject go, char separator='/')
 		{
 			return go.transform.GetPath(separator);
