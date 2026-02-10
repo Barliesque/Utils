@@ -53,6 +53,20 @@ namespace Barliesque.Utils
 			smoothed = value;
 		}
 
+		/// <summary>
+		/// Returns a copy of the samples collected, from newest to oldest.
+		/// </summary>
+		/// <returns></returns>
+		public Vector3[] GetSamples()
+		{
+			var samples = new Vector3[_samples.Length];
+			for (int i = 0; i < samples.Length; i++)
+			{
+				samples[i] = _samples[(_sampleIndex - i + _samples.Length) % _samples.Length];
+			}
+			return samples;
+		}
+
 		public Vector3 smoothed { get; private set; }
 		public Vector3 newest => _samples[_sampleIndex];
 		public Vector3 oldest => _samples[(_sampleIndex + 1) % _samples.Length];
