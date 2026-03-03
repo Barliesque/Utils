@@ -1,8 +1,10 @@
 using System;
+using Barliesque.EventObjects;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 /// <summary>
 /// Automatically increment the PlayerSettings.BundleVersion just before making a new build
@@ -10,6 +12,7 @@ using UnityEngine;
 public class BuildVersionAuto : IPreprocessBuildWithReport
 {
 	public int callbackOrder => 0;
+	private string[] _guids;
 
 	private const string _menuPath = "Tools/Auto Increment Build Number";
 	private const string _editorPrefsKey = "AutoIncrementBuildNumber";
@@ -70,21 +73,44 @@ public class BuildVersionAuto : IPreprocessBuildWithReport
 		Debug.Log($"<color=cyan>PlayerSettings.bundleVersion updated to:  {PlayerSettings.bundleVersion}</color>");
 #endif
 
-		string[] guids = AssetDatabase.FindAssets($"t:{typeof(GaugeString)}");
-		foreach (var guid in guids)
+		var buildDateTime = FindAsset<GaugeString>("BuildDateTime");
+		if (!buildDateTime) Debug.LogError($"<color=yellow>BuildDateTime not found.</color>");
+		if (buildDateTime && !buildDateTime.IsPersistent) Debug.LogError($"Could not store BuildDateTime because Gauge is not Persistent!", buildDateTime);
+		if (!buildDateTime || !buildDateTime.IsPersistent) return;
+		
+		var serializedDateTime = new SerializedObject(buildDateTime);
+		var now = DateTime.Now.ToString("g");
+		serializedDateTime.FindProperty("_default").stringValue = now;
+		serializedDateTime.FindProperty("_current").stringValue = now;
+		serializedDateTime.ApplyModifiedProperties();
+
+#if UNITY_ANDROID
+		var versionCode = FindAsset<GaugeInt>("BuildVersionCode");
+		if (versionCode && !versionCode.IsPersistent) Debug.LogError($"Could not store BuildVersionCode because Gauge is not Persistent!", versionCode);
+		
+		var serializedVersionCode = new SerializedObject(versionCode);
+		serializedVersionCode.FindProperty("_default").intValue = PlayerSettings.Android.bundleVersionCode;
+		serializedVersionCode.FindProperty("_current").intValue = PlayerSettings.Android.bundleVersionCode;
+		serializedVersionCode.ApplyModifiedProperties();
+#endif
+		
+		EditorUtility.SetDirty(buildDateTime);
+		_guids = null;
+	}
+	
+
+	private T FindAsset<T>(string assetName) where T : Object
+	{
+		_guids = AssetDatabase.FindAssets($"t:{typeof(T).Name}");
+		foreach (var guid in _guids)
 		{
 			string path = AssetDatabase.GUIDToAssetPath(guid);
-			var buildDateTime = AssetDatabase.LoadAssetAtPath<GaugeString>(path);
-			if (buildDateTime.name != "BuildDateTime") continue;
-			if (!buildDateTime.IsPersistent) Debug.LogError($"Could not store BuildDateTime because Gauge is not Persistent: {path}");
-
-			var serialized = new SerializedObject(buildDateTime);
-			var now = DateTime.Now.ToString("g");
-			serialized.FindProperty("_default").stringValue = now;
-			serialized.FindProperty("_current").stringValue = now;
-			serialized.ApplyModifiedProperties();
-			EditorUtility.SetDirty(buildDateTime);
+			var asset = AssetDatabase.LoadAssetAtPath<T>(path);
+			if (!asset) continue;
+			if (asset.name == assetName) return asset;
 		}
+		Debug.LogError($"Could not find asset \"{assetName}\" with search path: \"t:{typeof(T).Name}\"");
+		return null;
 	}
 	
 }
