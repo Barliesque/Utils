@@ -43,11 +43,26 @@ namespace Barliesque.Utils
 		}
 
 		/// <summary>
+		/// Copies the values in selected axes from another Vector3.  Note that this cannot modify the original Vector3 and must be reassigned.
+		/// </summary>
+		/// <param name="vec3"></param>
+		/// <param name="axes"></param>
+		/// <param name="copyFrom"></param>
+		/// <returns></returns>
+		static public Vector3 CopyAxes(this Vector3 vec3, Axis axes, Vector3 copyFrom)
+		{
+			if ((axes & Axis.X) == Axis.X) vec3.x = copyFrom.x;
+			if ((axes & Axis.Y) == Axis.Y) vec3.y = copyFrom.y;
+			if ((axes & Axis.Z) == Axis.Z) vec3.z = copyFrom.z;
+			return vec3;
+		}
+
+		/// <summary>
 		/// Divides each component of this vector by the corresponding component of the scale vector.
 		/// </summary>
-		static public Vector3 InverseScale(this Vector3 vec3, Vector3 scale)
+		static public Vector3 Divide(this Vector3 vec3, Vector3 divisor)
 		{
-			return new Vector3(vec3.x / scale.x, vec3.y / scale.y, vec3.z / scale.z);
+			return new Vector3(vec3.x / divisor.x, vec3.y / divisor.y, vec3.z / divisor.z);
 		}
 
 		/// <summary>
@@ -78,12 +93,23 @@ namespace Barliesque.Utils
 			return (pos - seg).magnitude;
 		}
 
-		static public float Volume(this Vector3 pos, bool isHalf = true)
+		/// <summary>
+		/// Calculates the cubic volume, where this Vector3 represents the half-dimensions
+		/// </summary>
+		/// <param name="size">Dimensions of the volume</param>
+		/// <param name="isHalf">True if dimensions are given as half the width, height, depth.</param>
+		/// <returns></returns>
+		static public float Volume(this Vector3 size, bool isHalf = false)
 		{
-			if (isHalf) return pos.x * pos.y * pos.z * 8f;
-			return pos.x * pos.y * pos.z;
+			if (isHalf) return size.x * size.y * size.z * 8f;
+			return size.x * size.y * size.z;
 		}
 
+		/// <summary>
+		/// Extract the XZ components as a Vector2
+		/// </summary>
+		/// <param name="vec3"></param>
+		/// <returns></returns>
 		static public Vector2 xz(this Vector3 vec3) => new(vec3.x, vec3.z);
 
 	}
