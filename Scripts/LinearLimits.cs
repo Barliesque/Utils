@@ -28,6 +28,14 @@ namespace Barliesque.Utils
 		public float InverseLerp(float value) => Mathf.Clamp01((value - Start) / (End - Start));
 		public float InverseLerpUnclamped(float value) => (value - Start) / (End - Start);
 		public float Center => (Start + End) * 0.5f;
+
+		/// <summary>
+		/// Remap a given value from this range to another.
+		/// </summary>
+		/// <param name="value">The input value</param>
+		/// <param name="toRange">The range to remap to</param>
+		/// <returns></returns>
+		public float Remap(float value, LinearLimits toRange) => toRange.Lerp(InverseLerp(value));
 		
 		/// <summary> Smoothly clamps within the range, avoiding hard stops at the range limits. </summary>
 		/// <param name="value"> The original value to be clamped. </param>
