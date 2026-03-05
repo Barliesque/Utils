@@ -5,6 +5,11 @@ using UnityEngine.Events;
 namespace Barliesque.Utils
 {
 
+	/// <summary>
+	/// AnimatorEvent offers a generic way to receive frame events from an Animator.
+	/// It invokes standard UnityEvents that can be accessed by other components,
+	/// without their having to be on the same GameObject as the Animator.
+	/// </summary>
 	public class AnimatorEvent : MonoBehaviour
 	{
 		[Flags] public enum ParamType
