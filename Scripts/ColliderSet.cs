@@ -3,18 +3,16 @@ using UnityEngine;
 
 namespace Barliesque.Utils
 {
-
 	/// <summary>
-	/// A class to manage the entry and exit of colliders belonging to a Rigidbody, so that only one enter event
-	/// and one exit event is triggered for a body that is comprised of multiple colliders.
+	/// A class to manage the entry and exit of colliders belonging to a Rigidbody, so that only one
+	/// enter event and one exit event is triggered for a body that comprises multiple colliders.
 	/// </summary>
 	public class ColliderSet
 	{
-
 		private Dictionary<Rigidbody, int> _colliderCount = new Dictionary<Rigidbody, int>();
 		private Dictionary<Collider, BodyData> _bodies = new Dictionary<Collider, BodyData>();
-		
-		
+
+
 		private struct BodyData
 		{
 			public Rigidbody Body;
@@ -62,6 +60,7 @@ namespace Barliesque.Utils
 				{
 					_bodies[other] = data.UpdateKinematic();
 				}
+
 				return null;
 			}
 
@@ -97,20 +96,21 @@ namespace Barliesque.Utils
 				return null;
 #endif
 			}
-			
+
 			var body = data.Body;
 			_bodies.Remove(other);
-			
+
 			if (--_colliderCount[body] == 0)
 			{
 				_colliderCount.Remove(body);
 				return body;
 			}
+
 			return null;
 		}
 
 		public int BodyCount => _colliderCount.Count;
-		
+
 		public bool ContainsBody(Rigidbody body)
 		{
 			return _colliderCount.ContainsKey(body);
@@ -122,6 +122,7 @@ namespace Barliesque.Utils
 			{
 				if (item.Key.CompareTag(tag)) return true;
 			}
+
 			return false;
 		}
 
@@ -131,5 +132,24 @@ namespace Barliesque.Utils
 			_bodies.Clear();
 		}
 
+		public List<Rigidbody> GetBodies()
+		{
+			var result = new List<Rigidbody>();
+			foreach (var item in _colliderCount)
+			{
+				if (item.Value > 0) result.Add(item.Key);
+			}
+			return result;
+		}
+
+		public Rigidbody GetAnyBody()
+		{
+			foreach (var item in _colliderCount)
+			{
+				if (item.Value > 0) return item.Key;
+			}
+			return null;
+		}
+		
 	}
 }
