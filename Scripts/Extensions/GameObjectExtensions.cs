@@ -79,7 +79,21 @@ namespace Barliesque.Utils
 		{
 			SetLayer(go, LayerMask.NameToLayer(layer));
 		}
+
 		
+		/// <summary>
+		/// Activate or deactivate each immediate child of this GameObject. 
+		/// </summary>
+		/// <param name="go"></param>
+		/// <param name="active">The active state to set, where true sets the GameObject active and false sets it to inactive.</param>
+		static public void SetChildrenActive(this GameObject go, bool active)
+		{
+			var xform = go.transform;
+			for (int i = 0, len = xform.childCount; i < len; i++)
+			{
+				xform.GetChild(i).gameObject.SetActive(active);
+			}
+		}
 
 	}
 
