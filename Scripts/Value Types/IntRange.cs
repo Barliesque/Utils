@@ -34,7 +34,7 @@ namespace Barliesque.Utils
 		/// <summary>
 		/// How many values are encompassed by this range?  If Start and End are equal, this will be 1.
 		/// </summary>
-		public int Size => Mathf.Abs(End + (End >= 0 ? 1 : -1) - Start);
+		public int Size => Mathf.Abs(End - Start) + 1;
 		
 		public int Lerp(float t) => Mathf.RoundToInt(Mathf.Lerp(Start, End, t));
 		public int LerpUnclamped(float t) => Mathf.RoundToInt(Mathf.LerpUnclamped(Start, End, t));

@@ -1,5 +1,7 @@
 ﻿using Barliesque.InspectorTools.Editor;
 using UnityEditor;
+using UnityEngine;
+
 // using UnityEngine;
 // using UnityEngine.UIElements;
 // using UnityEditor.UIElements;
@@ -10,14 +12,32 @@ namespace Barliesque.Utils.Editor
 	[CustomPropertyDrawer(typeof(LinearLimits))]
 	public class LinearLimitsDrawer : PropertyDrawerHelper
 	{
+
+		//TODO  Custom make drag-to-change gadgets
+		static private GUIContent _dragStartIcon;
+		static private GUIContent _dragEndIcon;
+		
 		override public void CustomDrawer()
 		{
 			var width = _position.width * 0.5f - 26f;
+
+			/*
+			_dragStartIcon ??= new GUIContent(EditorGUIUtility.IconContent("d_tab_prev").image);
+			_dragEndIcon ??= new GUIContent(EditorGUIUtility.IconContent("d_tab_next").image);
+
+			IconButton(_dragStartIcon);
+			Field(width - 26f, "Start");
+			Label(16f, "to");
+			Field(width - 26f, "End");
+			IconButton(_dragEndIcon);
+			*/
+			
 			Field(width, "Start");
 			Label(16f, "to");
 			Field(width, "End");
 		}
-		
+
+
 		/*
 		override public VisualElement CreatePropertyGUI(SerializedProperty property)
 		{

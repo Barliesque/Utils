@@ -120,11 +120,17 @@ namespace Barliesque.Utils
 		/// </summary>
 		/// <param name="value"></param>
 		/// <param name="other"></param>
+		/// <param name="ignoreLeadingNumerics">If true, any numeric characters at the start of either string are ignored</param>
 		/// <returns></returns>
-		static public bool MatchesAlphaNumeric(this string value, string other)
+		static public bool MatchesAlphaNumeric(this string value, string other, bool ignoreLeadingNumerics = false)
 		{
 			value = Regex.Replace(value, "[^a-zA-Z0-9]", string.Empty);
 			other = Regex.Replace(other, "[^a-zA-Z0-9]", string.Empty);
+			if (ignoreLeadingNumerics)
+			{
+				value = Regex.Replace(value, @"^\d+", string.Empty);
+				other = Regex.Replace(other, @"^\d+", string.Empty);
+			}
 			return value.Equals(other, StringComparison.OrdinalIgnoreCase);
 		}
 

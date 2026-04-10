@@ -5,6 +5,10 @@ using UnityEngine.Events;
 
 namespace Barliesque.Utils
 {
+	//TODO  BUG: Multiple trigger colliders trigger multiple events
+	//TODO  Subscribing to an event that will never be fired ought to log an error - If only when running in the Editor
+
+
 
 	/// <summary>
 	/// Enables more convenient handling of 3D physics collision and trigger events.
