@@ -8,12 +8,13 @@ namespace Barliesque.Utils
 	static public class Mathf2
 	{
 		/// <summary>
-		/// Returns the value that is furthest from zero.
+		/// Returns the value that is furthest from zero.  Values are compared as absolutes, but the original signed value is returned.
 		/// </summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		static public float AbsMax(float a, float b) => (Math.Abs(a) > Math.Abs(b) ? a : b);
 
 		/// <summary>
-		/// Returns the value that is furthest from zero.
+		/// Returns the value that is furthest from zero.  Values are compared as absolutes, but the original signed value is returned.
 		/// </summary>
 		static public float AbsMax(params float[] values)
 		{
@@ -35,12 +36,12 @@ namespace Barliesque.Utils
 
 
 		/// <summary>
-		/// Returns the value that is closest to zero.
+		/// Returns the value that is closest to zero.  Values are compared as absolutes, but the original signed value is returned.
 		/// </summary>
 		static public float AbsMin(float a, float b) => (Math.Abs(a) < Math.Abs(b) ? a : b);
 
 		/// <summary>
-		/// Returns the value that is closest to zero.
+		/// Returns the value that is closest to zero.  Values are compared as absolutes, but the original signed value is returned.
 		/// </summary>
 		static public float AbsMin(params float[] values)
 		{
@@ -72,18 +73,34 @@ namespace Barliesque.Utils
 		}
 
 
+		/// <summary>
+		/// Normalizes a value to a range, where zero represents the start and one the end of the range.  If the value is outside the range, then the returned value will be similarly outside the range [0 to 1]
+		/// </summary>
+		/// <param name="start">The starting value of the range</param>
+		/// <param name="end">The ending value of the range</param>
+		/// <param name="value">The value to be normalized</param>
+		/// <returns>A normalized value which may extend beyond the range [0 to 1]</returns>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		static public float InverseLerpUnclamped(float start, float end, float value)
 		{
 			return (value - start) / (end - start);
 		}
 
+		/// <summary>
+		/// Linear interpolation between euler rotations, but makes sure the values interpolate correctly when wrapping around 360 degrees.
+		/// </summary>
+		/// <param name="a">The start rotation in degrees.</param>
+		/// <param name="b">The end rotation in degrees.</param>
+		/// <param name="t">The interpolation value between the start and end angles. This value is clamped to the range [0, 1]</param>
+		/// <returns>Returns the interpolated Vector3 result between rotation a and rotation b, based on the interpolation value t.</returns>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		static public Vector3 LerpEulerAngles(Vector3 a, Vector3 b, float t)
 		{
 			return new Vector3(Mathf.LerpAngle(a.x, b.x, t), Mathf.LerpAngle(a.y, b.y, t), Mathf.LerpAngle(a.z, b.z, t));
 		}
 		
 		/// <summary>
-		/// Remap a value from one range to another
+		/// Remap a value from one range to another.  If the input value is outside the original range, the result will be similarly outside the new range.
 		/// </summary>
 		/// <param name="value">Value to convert</param>
 		/// <param name="originalStart">Start of original range</param>
@@ -100,7 +117,7 @@ namespace Barliesque.Utils
 		}
 		
 		/// <summary>
-		/// Remap a value from one range to another
+		/// Remap a value from one range to another.  Original and new value ranges are clamped.
 		/// </summary>
 		/// <param name="value">Value to convert</param>
 		/// <param name="originalStart">Start of original range</param>
@@ -351,6 +368,7 @@ namespace Barliesque.Utils
 		/// <param name="toValue">The value returned when t is 1.</param>
 		/// <param name="t">A value from 0 to 1, though this is not clamped.</param>
 		/// <returns></returns>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		static public float Eerp(float fromValue, float toValue, float t)
 		{
 			return fromValue * Mathf.Pow(toValue / fromValue, t);
@@ -442,21 +460,17 @@ namespace Barliesque.Utils
 			return Vector3.Dot(av, ab) / Vector3.Dot(ab, ab);
 		}
 		
+		
 		/// <summary>
-		/// Determine optimal dimensions to fit any given number of elements.
+		/// Determine optimal dimensions of a 2D array, to fit any given number of elements.  The algorithm aims for a similar number of rows and columns, leaving as few empty cells as possible.
 		/// </summary>
 		/// <param name="elementCount"></param>
 		/// <param name="width"></param>
 		/// <param name="height"></param>
-        static public void GetDimensions(int elementCount, out int width, out int height) 
-		{
-			var factors = new List<int>();
-			for(int i = 1; i <= elementCount; i++) 
-			{
-				if (i % 2 == 0) factors.Add(i);
-			}
-			width = factors[factors.Count >> 1];
-			height = elementCount / width;
+        static public void GetDimensions(int elementCount, out int width, out int height)
+        {
+	        width = Mathf.FloorToInt(Mathf.Sqrt(elementCount));
+	        height = Mathf.CeilToInt((float)elementCount / width);
 		}
         
 	}
