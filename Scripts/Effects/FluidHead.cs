@@ -19,7 +19,7 @@ namespace Barliesque.Utils
 		
 		[SerializeField] private bool _disableOnMobile = true;
 
-		private Quaternion _rotationVelocity = Quaternion.identity;
+		private Quaternion _rotationVelocity = QuaternionUtils.ZeroVelocity;
 		private Vector3 _positionVelocity = Vector3.zero;
 		private Transform _xform;
 		
