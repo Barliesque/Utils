@@ -97,6 +97,37 @@ namespace Barliesque.Utils
 				yield return Timing.WaitForOneFrame;
 			} while (timer < duration);
 		}
+		
+		
+		public delegate void Callback<in T, in U, in V>(float t, T value1, U value2, V value3);
+
+		static public CoroutineHandle Play<T,U,V>(this MonoBehaviour owner, float duration, Callback<T,U,V> callback, T value1, U value2, V value3) => Play(owner, duration, true, callback, value1, value2, value3);
+		static public CoroutineHandle Play<T,U,V>(this MonoBehaviour owner, float duration, bool cancelOnDisable, Callback<T,U,V> callback, T value1, U value2, V value3)
+		{
+			if (!cancelOnDisable) return Timing.RunCoroutine(_PlayFunction(duration, callback, value1, value2, value3, true));
+			if (!owner.isActiveAndEnabled) return new CoroutineHandle();
+			return Timing.RunCoroutine(_PlayFunction(duration, callback, value1, value2, value3, true).CancelWith(owner));
+		}
+		
+		static public CoroutineHandle PlayUnscaled<T,U,V>(this MonoBehaviour owner, float duration, Callback<T,U,V> callback, T value1, U value2, V value3) => PlayUnscaled(owner, duration, true, callback, value1, value2, value3);
+		static public CoroutineHandle PlayUnscaled<T,U,V>(this MonoBehaviour owner, float duration, bool cancelOnDisable, Callback<T,U,V> callback, T value1, U value2, V value3)
+		{
+			if (!cancelOnDisable) return Timing.RunCoroutine(_PlayFunction(duration, callback, value1, value2, value3, false));
+			if (!owner.isActiveAndEnabled) return new CoroutineHandle();
+			return Timing.RunCoroutine(_PlayFunction(duration, callback, value1, value2, value3, false).CancelWith(owner));
+		}
+
+		static private IEnumerator<float> _PlayFunction<T,U,V>(float duration, Callback<T,U,V> callback, T value1, U value2, V value3, bool scaledTime)
+		{
+			var timer = 0f;
+			do
+			{
+				timer += scaledTime ? Time.deltaTime : Time.unscaledDeltaTime;
+				callback(Mathf.Clamp01(timer / duration), value1, value2, value3);
+				yield return Timing.WaitForOneFrame;
+			} while (timer < duration);
+		}
+		
 
 		/// <summary>
 		/// Invoke an action after a specified number of frames.  (Default: 1 frame)
