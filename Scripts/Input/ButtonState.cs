@@ -15,6 +15,7 @@ namespace Barliesque.Utils
 		private float _threshold;
 		private float _heldTime;
 		private int _lastUpdated = -1;
+		private int _heldFrames;
 		private float _deadZone;
 
 		
@@ -35,6 +36,12 @@ namespace Barliesque.Utils
 			_deadZone = deadZone;
 		}
 
+		/// <summary>
+		/// The minimum number of frames before a button state change should be registered.
+		/// Increasing this value may help to neutralize erratic button inputs.
+		/// </summary>
+		public int MinHold = 0;
+
 
 		/// <summary>
 		/// To be called once every frame to update the current state of the button.
@@ -48,18 +55,18 @@ namespace Barliesque.Utils
 			{
 				_wasActive = IsActive;
 				_lastUpdated = Time.frameCount;
+				_heldTime += Time.unscaledDeltaTime;
+				++_heldFrames;
 			}
 			
+			// Note:  This will change the value of IsActive
 			// Apply a dead zone to avoid small noise values
 			_analog = (Mathf.Abs(analog) <= _deadZone) ? 0f : analog;
 
-			if (_wasActive && IsActive)
-			{
-				if (newFrame) _heldTime += Time.unscaledDeltaTime;
-			}
-			else
+			if (_wasActive != IsActive)
 			{
 				_heldTime = 0f;
+				_heldFrames = 0;
 			}
 			
 			if (!string.IsNullOrEmpty(LogChanges) && IsActive != _wasActive)
@@ -81,17 +88,17 @@ namespace Barliesque.Utils
 			{
 				_wasActive = IsActive;
 				_lastUpdated = Time.frameCount;
+				if (_wasActive) _heldTime += Time.unscaledDeltaTime;
+				++_heldFrames;
 			}
 			
+			// Note:  This will change the value of IsActive
 			_analog = isActive ? 1f : 0f;
 
-			if (_wasActive && IsActive)
-			{
-				if (newFrame) _heldTime += Time.unscaledDeltaTime;
-			}
-			else
+			if (_wasActive != IsActive)
 			{
 				_heldTime = 0f;
+				_heldFrames = 0;
 			}
 			
 			if (!string.IsNullOrEmpty(LogChanges) && IsActive != _wasActive)
@@ -109,12 +116,26 @@ namespace Barliesque.Utils
 		/// <summary>
 		/// Did the button become active this frame?
 		/// </summary>
-		public bool Began => IsActive && !_wasActive;
+		public bool Began
+		{
+			get
+			{
+				if (MinHold > 0) return IsActive && _heldFrames == MinHold;
+				return IsActive && !_wasActive;
+			}
+		}
 
 		/// <summary>
 		/// Did the button become inactive this frame?
 		/// </summary>
-		public bool Ended => _wasActive && !IsActive;
+		public bool Ended
+		{
+			get
+			{
+				if (MinHold > 0) return !IsActive && _heldFrames == MinHold;
+				return _wasActive && !IsActive;
+			}
+		}
 
 		/// <summary>
 		/// How long has the button been active?  Zero is returned if the button is not currently active.
