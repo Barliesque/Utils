@@ -1,7 +1,7 @@
 {
   "name": "com.barliesque.utils",
   "displayName": "Barliesque Utils",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "unity": "2021.3",
   "description": "A collection of utility classes for a wide variety of common needs in Unity development.",
   "keywords": ["unity", "package", "common", "code", "reusable", "helpers"],
