@@ -3,8 +3,8 @@
     "rootNamespace": "",
     "references": [
         "Barliesque.InspectorTools",
-        "Trinary.MEC",
-        "Unity.TextMeshPro"
+        "Unity.TextMeshPro",
+        "DigitalDust"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
