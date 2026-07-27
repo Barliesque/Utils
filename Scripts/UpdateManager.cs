@@ -4,7 +4,6 @@ using System;
 
 namespace Barliesque.Utils
 {
-	
 	public sealed class UpdateManager : MonoBehaviour
 	{
 		static private UpdateManager _inst;
@@ -69,6 +68,13 @@ namespace Barliesque.Utils
 			timerEighthSec.Start();
 		}
 
+		/// <summary>
+		/// Add an update callback at the specified timing interval.
+		/// NOTE: Be careful to remove update callbacks in, for example, OnDestroy().
+		/// </summary>
+		/// <param name="update">Update callback will receive a (float) deltaTime parameter, with the precise duration since it was last called — <i>not the duration between frames.</i></param>
+		/// <param name="timing">The UpdateManager.Timing enum provides a variety of different intervals, mostly called from a central Update() routine.</param>
+		/// <exception cref="ArgumentOutOfRangeException"></exception>
 		public void AddUpdate(UpdateHandler update, Timing timing = Timing.Frame)
 		{
 			RemoveUpdate(update, timing);
@@ -213,9 +219,10 @@ namespace Barliesque.Utils
 
 		//.....................................................
 
+		/// <inheritdoc cref="AddUpdate" />
 		static public void Add(UpdateHandler update, Timing timing = Timing.Frame)
 		{
-			if (_inst == null)
+			if (!_inst)
 			{
 				var go = new GameObject("UpdateManager");
 				_inst = go.AddComponent<UpdateManager>();
@@ -226,8 +233,7 @@ namespace Barliesque.Utils
 
 		static public void Remove(UpdateHandler update, Timing timing = Timing.Frame)
 		{
-			if (_inst != null)
-				_inst.RemoveUpdate(update, timing);
+			if (_inst) _inst.RemoveUpdate(update, timing);
 		}
 	}
 }
