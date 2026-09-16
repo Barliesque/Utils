@@ -4,7 +4,8 @@
     "references": [
         "Barliesque.InspectorTools",
         "Unity.TextMeshPro",
-        "DigitalDust"
+        "DigitalDust",
+        "Barliesque.EventObjects"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
