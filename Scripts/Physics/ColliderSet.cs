@@ -9,28 +9,28 @@ namespace Barliesque.Utils
 	/// </summary>
 	public class ColliderSet
 	{
-		private Dictionary<Rigidbody, int> _colliderCount = new Dictionary<Rigidbody, int>();
-		private Dictionary<Collider, BodyData> _bodies = new Dictionary<Collider, BodyData>();
+		private readonly Dictionary<Rigidbody, int> _colliderCount = new ();
+		private readonly Dictionary<Collider, BodyData> _bodies = new ();
 
 
 		private struct BodyData
 		{
-			public Rigidbody Body;
-			public bool IsKinematic;
+			public readonly Rigidbody Body;
+			private bool _isKinematic;
 
 			public BodyData(Rigidbody body)
 			{
 				Body = body;
-				IsKinematic = body.isKinematic;
+				_isKinematic = body.isKinematic;
 			}
 
 			public BodyData UpdateKinematic()
 			{
-				IsKinematic = Body.isKinematic;
+				_isKinematic = Body.isKinematic;
 				return this;
 			}
 
-			public bool KinematicMismatch => IsKinematic != Body.isKinematic;
+			public bool KinematicMismatch => _isKinematic != Body.isKinematic;
 		}
 
 
@@ -64,16 +64,9 @@ namespace Barliesque.Utils
 				return null;
 			}
 
-			if (_colliderCount.ContainsKey(body))
-			{
-				_colliderCount[body]++;
-				return null;
-			}
-			else
-			{
-				_colliderCount.Add(body, 1);
-				return body;
-			}
+			if (_colliderCount.TryAdd(body, 1)) return body;
+			_colliderCount[body]++;
+			return null;
 		}
 
 
@@ -85,8 +78,7 @@ namespace Barliesque.Utils
 		/// <returns>If a Rigidbody has completely exited the trigger, it will be returned.   Otherwise, null is returned.</returns>
 		public Rigidbody Exit(Collider other)
 		{
-			if (!_bodies.ContainsKey(other)) return null;
-			var data = _bodies[other];
+			if (!_bodies.TryGetValue(other, out var data)) return null;
 			if (data.KinematicMismatch)
 			{
 				_bodies[other] = data.UpdateKinematic();
@@ -118,9 +110,9 @@ namespace Barliesque.Utils
 
 		public bool ContainsTag(string tag)
 		{
-			foreach (var item in _bodies)
+			foreach (var col in _bodies.Keys)
 			{
-				if (item.Key.CompareTag(tag)) return true;
+				if (col.CompareTag(tag)) return true;
 			}
 
 			return false;
@@ -132,24 +124,68 @@ namespace Barliesque.Utils
 			_bodies.Clear();
 		}
 
+		/// <summary>
+		/// Get a list of rigidbodies in the collection.
+		/// </summary>
+		/// <returns></returns>
 		public List<Rigidbody> GetBodies()
 		{
 			var result = new List<Rigidbody>();
-			foreach (var item in _colliderCount)
+			foreach (var (body, count) in _colliderCount)
 			{
-				if (item.Value > 0) result.Add(item.Key);
+				if (count > 0) result.Add(body);
 			}
 			return result;
 		}
 
+		/// <summary>
+		/// Append rigidbodies in the collection to an existing list.
+		/// </summary>
+		/// <param name="bodies">The specified List will not be cleared.  All bodies in the collection will simply be added.</param>
+		/// <returns></returns>
+		public void GetBodies(List<Rigidbody> bodies)
+		{
+			foreach (var (body, count) in _colliderCount)
+			{
+				if (count > 0) bodies.Add(body);
+			}
+		}
+
 		public Rigidbody GetAnyBody()
 		{
-			foreach (var item in _colliderCount)
+			foreach (var (body, count) in _colliderCount)
 			{
-				if (item.Value > 0) return item.Key;
+				if (count > 0) return body;
 			}
 			return null;
 		}
 		
+		private readonly List<Collider> _stale = new();
+
+		/// <summary> Remove colliders that were disabled, deactivated or destroyed without an exit event. </summary>
+		public void PruneInactive(System.Action<Collider> onBodyExited = null)
+		{
+			_stale.Clear();
+			foreach (var col in _bodies.Keys)
+			{
+				if (!col || !col.enabled || !col.gameObject.activeInHierarchy) _stale.Add(col);
+			}
+
+			for (int i = 0, len = _stale.Count; i < len; i++)
+			{
+				var col = _stale[i];
+				var body = _bodies[col].Body;
+				_bodies.Remove(col);
+				if (!_colliderCount.TryGetValue(body, out var count)) continue;
+				if (--count > 0)
+				{
+					_colliderCount[body] = count;
+					continue;
+				}
+
+				_colliderCount.Remove(body);
+				if (col) onBodyExited?.Invoke(col);
+			}
+		}
 	}
 }

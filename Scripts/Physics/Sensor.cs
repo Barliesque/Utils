@@ -33,6 +33,11 @@ namespace Barliesque.Utils
 		public TriggerHandler OnEnterTrigger = new TriggerHandler();
 		public TriggerHandler OnExitTrigger = new TriggerHandler();
 		public CollisionHandler OnEnterCollision = new CollisionHandler();
+		
+		/// <summary>
+		/// NOTE: In rare cases, it is possible for the Collision parameter,
+		/// passed to OnExitCollision handlers, to be null.
+		/// </summary>
 		public CollisionHandler OnExitCollision = new CollisionHandler();
 		
 #if !SENSOR_STAY
@@ -163,6 +168,14 @@ namespace Barliesque.Utils
 				OnExitCollision?.Invoke(this, collision);
 				invoked = true;
 			}
+		}
+		
+		private void FixedUpdate()
+		{
+			if (Triggers is { BodyCount: > 0 })
+				Triggers.PruneInactive(col => OnExitTrigger?.Invoke(this, col));
+			if (Colliders is { BodyCount: > 0 })
+				Colliders.PruneInactive(col => OnExitCollision?.Invoke(this, null));
 		}
 		
 	}
