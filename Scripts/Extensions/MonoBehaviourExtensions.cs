@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using MEC;
 using UnityEngine;
@@ -171,6 +172,24 @@ namespace Barliesque.Utils
 				yield return Timing.WaitForOneFrame;
 				--frames;
 			}
+			action.Invoke();
+		}
+
+
+		/// <summary>
+		/// Perform an action in the LateUpdate phase
+		/// </summary>
+		/// <param name="owner"></param>
+		/// <param name="action"></param>
+		/// <returns></returns>
+		static public Coroutine DoAtEndOfFrame(this MonoBehaviour owner, Action action)
+		{
+			return owner.StartCoroutine(DoInLateUpdate(action));
+		}
+
+		static private IEnumerator DoInLateUpdate(Action action)
+		{
+			yield return new WaitForEndOfFrame();
 			action.Invoke();
 		}
 		
