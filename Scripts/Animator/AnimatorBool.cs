@@ -16,7 +16,7 @@ namespace Barliesque.Utils
 
 		public bool Value
 		{
-			get { return _value; }
+			get => _value;
 			set
 			{
 				_value = value;
@@ -48,7 +48,25 @@ namespace Barliesque.Utils
 
 		override public string ToString()
 		{
-			return string.Format("{0} = {1}", Name, _value ? "true" : "false");
+			return $"{Name} = {(_value ? "true" : "false")}";
 		}
+
+		public bool CheckParameterExists() => CheckParameterExists(animator, Name);
+
+		static public bool CheckParameterExists(Animator animator, string boolParam)
+		{
+			if (!animator) return false;
+			if (string.IsNullOrEmpty(boolParam)) return false;
+			
+			animator.Update(0f); // Forces parameters list to be updated
+			foreach (var param in animator.parameters)
+			{
+				if (!param.name.Equals(boolParam)) continue;
+				// It exists, but is it a bool?
+				return param.type == AnimatorControllerParameterType.Bool;
+			}
+			return false;
+		}
+		
 	}
 }

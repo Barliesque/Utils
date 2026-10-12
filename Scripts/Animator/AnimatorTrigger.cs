@@ -32,8 +32,26 @@ namespace Barliesque.Utils
 
         override public string ToString()
         {
-            return string.Format("[AnimatorTrigger] {0}", Name);
+            return $"[AnimatorTrigger] {Name}";
         }
+        
+        public bool CheckParameterExists() => CheckParameterExists(animator, Name);
+
+        static public bool CheckParameterExists(Animator animator, string triggerParam)
+        {
+            if (!animator) return false;
+            if (string.IsNullOrEmpty(triggerParam)) return false;
+			
+            animator.Update(0f); // Forces parameters list to be updated
+            foreach (var param in animator.parameters)
+            {
+                if (!param.name.Equals(triggerParam)) continue;
+                // It exists, but is it a trigger?
+                return param.type == AnimatorControllerParameterType.Trigger;
+            }
+            return false;
+        }
+
     }
 
 }

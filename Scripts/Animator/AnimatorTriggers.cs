@@ -51,5 +51,19 @@ namespace Barliesque.Utils
 		{
 			return $"[AnimatorTriggers] {string.Join(',', Names)}";
 		}
+		
+		public bool CheckParametersExist()
+		{
+			var allGood = true;
+			foreach (var name in Names)
+			{
+				if (AnimatorTrigger.CheckParameterExists(animator, name)) continue;
+				
+				Debug.LogError($"Trigger parameter [{name}] does not exist!");
+				allGood = false;
+			}
+			return allGood;
+		}
+		
 	}
 }

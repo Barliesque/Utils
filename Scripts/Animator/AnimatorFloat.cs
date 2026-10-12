@@ -46,7 +46,26 @@ namespace Barliesque.Utils
 
 		override public string ToString()
 		{
-			return string.Format("{0} = {1}", Name, _value);
+			return $"{Name} = {_value}";
 		}
+		
+		public bool CheckParameterExists() => CheckParameterExists(animator, Name);
+
+		static public bool CheckParameterExists(Animator animator, string floatParam)
+		{
+			if (!animator) return false;
+			if (string.IsNullOrEmpty(floatParam)) return false;
+			
+			animator.Update(0f); // Forces parameters list to be updated
+			foreach (var param in animator.parameters)
+			{
+				if (!param.name.Equals(floatParam)) continue;
+				// It exists, but is it a float?
+				return param.type == AnimatorControllerParameterType.Float;
+			}
+			return false;
+		}
+		
+		
 	}
 }
