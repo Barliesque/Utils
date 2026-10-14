@@ -127,6 +127,99 @@ namespace Barliesque.Utils
 				callback(Mathf.Clamp01(timer / duration), value1, value2, value3);
 				yield return Timing.WaitForOneFrame;
 			} while (timer < duration);
+		}	
+		
+		
+		
+		public delegate void Callback<in T, in U, in V, in W>(float t, T value1, U value2, V value3, W value4);
+
+		static public CoroutineHandle Play<T,U,V,W>(this MonoBehaviour owner, float duration, Callback<T,U,V,W> callback, T value1, U value2, V value3, W value4) => Play(owner, duration, true, callback, value1, value2, value3, value4);
+		static public CoroutineHandle Play<T,U,V,W>(this MonoBehaviour owner, float duration, bool cancelOnDisable, Callback<T,U,V,W> callback, T value1, U value2, V value3, W value4)
+		{
+			if (!cancelOnDisable) return Timing.RunCoroutine(_PlayFunction(duration, callback, value1, value2, value3, value4, true));
+			if (!owner.isActiveAndEnabled) return new CoroutineHandle();
+			return Timing.RunCoroutine(_PlayFunction(duration, callback, value1, value2, value3, value4, true).CancelWith(owner));
+		}
+		
+		static public CoroutineHandle PlayUnscaled<T,U,V,W>(this MonoBehaviour owner, float duration, Callback<T,U,V,W> callback, T value1, U value2, V value3, W value4) => PlayUnscaled(owner, duration, true, callback, value1, value2, value3, value4);
+		static public CoroutineHandle PlayUnscaled<T,U,V,W>(this MonoBehaviour owner, float duration, bool cancelOnDisable, Callback<T,U,V,W> callback, T value1, U value2, V value3, W value4)
+		{
+			if (!cancelOnDisable) return Timing.RunCoroutine(_PlayFunction(duration, callback, value1, value2, value3, value4, false));
+			if (!owner.isActiveAndEnabled) return new CoroutineHandle();
+			return Timing.RunCoroutine(_PlayFunction(duration, callback, value1, value2, value3, value4, false).CancelWith(owner));
+		}
+
+		static private IEnumerator<float> _PlayFunction<T,U,V,W>(float duration, Callback<T,U,V,W> callback, T value1, U value2, V value3, W value4, bool scaledTime)
+		{
+			var timer = 0f;
+			do
+			{
+				timer += scaledTime ? Time.deltaTime : Time.unscaledDeltaTime;
+				callback(Mathf.Clamp01(timer / duration), value1, value2, value3, value4);
+				yield return Timing.WaitForOneFrame;
+			} while (timer < duration);
+		}
+		
+
+		
+		public delegate void Callback<in T, in U, in V, in W, in X>(float t, T value1, U value2, V value3, W value4, X value5);
+
+		static public CoroutineHandle Play<T,U,V,W,X>(this MonoBehaviour owner, float duration, Callback<T,U,V,W,X> callback, T value1, U value2, V value3, W value4, X value5) => Play(owner, duration, true, callback, value1, value2, value3, value4, value5);
+		static public CoroutineHandle Play<T,U,V,W,X>(this MonoBehaviour owner, float duration, bool cancelOnDisable, Callback<T,U,V,W,X> callback, T value1, U value2, V value3, W value4, X value5)
+		{
+			if (!cancelOnDisable) return Timing.RunCoroutine(_PlayFunction(duration, callback, value1, value2, value3, value4, value5, true));
+			if (!owner.isActiveAndEnabled) return new CoroutineHandle();
+			return Timing.RunCoroutine(_PlayFunction(duration, callback, value1, value2, value3, value4, value5, true).CancelWith(owner));
+		}
+		
+		static public CoroutineHandle PlayUnscaled<T,U,V,W,X>(this MonoBehaviour owner, float duration, Callback<T,U,V,W,X> callback, T value1, U value2, V value3, W value4, X value5) => PlayUnscaled(owner, duration, true, callback, value1, value2, value3, value4, value5);
+		static public CoroutineHandle PlayUnscaled<T,U,V,W,X>(this MonoBehaviour owner, float duration, bool cancelOnDisable, Callback<T,U,V,W,X> callback, T value1, U value2, V value3, W value4, X value5)
+		{
+			if (!cancelOnDisable) return Timing.RunCoroutine(_PlayFunction(duration, callback, value1, value2, value3, value4, value5, false));
+			if (!owner.isActiveAndEnabled) return new CoroutineHandle();
+			return Timing.RunCoroutine(_PlayFunction(duration, callback, value1, value2, value3, value4, value5, false).CancelWith(owner));
+		}
+
+		static private IEnumerator<float> _PlayFunction<T,U,V,W,X>(float duration, Callback<T,U,V,W,X> callback, T value1, U value2, V value3, W value4, X value5, bool scaledTime)
+		{
+			var timer = 0f;
+			do
+			{
+				timer += scaledTime ? Time.deltaTime : Time.unscaledDeltaTime;
+				callback(Mathf.Clamp01(timer / duration), value1, value2, value3, value4, value5);
+				yield return Timing.WaitForOneFrame;
+			} while (timer < duration);
+		}
+		
+
+		
+		public delegate void Callback<in T, in U, in V, in W, in X, in Y>(float t, T value1, U value2, V value3, W value4, X value5, Y value6);
+
+		static public CoroutineHandle Play<T,U,V,W,X,Y>(this MonoBehaviour owner, float duration, Callback<T,U,V,W,X,Y> callback, T value1, U value2, V value3, W value4, X value5, Y value6) => Play(owner, duration, true, callback, value1, value2, value3, value4, value5, value6);
+		static public CoroutineHandle Play<T,U,V,W,X,Y>(this MonoBehaviour owner, float duration, bool cancelOnDisable, Callback<T,U,V,W,X,Y> callback, T value1, U value2, V value3, W value4, X value5, Y value6)
+		{
+			if (!cancelOnDisable) return Timing.RunCoroutine(_PlayFunction(duration, callback, value1, value2, value3, value4, value5, value6, true));
+			if (!owner.isActiveAndEnabled) return new CoroutineHandle();
+			return Timing.RunCoroutine(_PlayFunction(duration, callback, value1, value2, value3, value4, value5, value6, true).CancelWith(owner));
+		}
+		
+		static public CoroutineHandle PlayUnscaled<T,U,V,W,X,Y>(this MonoBehaviour owner, float duration, Callback<T,U,V,W,X,Y> callback, T value1, U value2, V value3, W value4, X value5, Y value6) => PlayUnscaled(owner, duration, true, callback, value1, value2, value3, value4, value5, value6);
+		static public CoroutineHandle PlayUnscaled<T,U,V,W,X,Y>(this MonoBehaviour owner, float duration, bool cancelOnDisable, Callback<T,U,V,W,X,Y> callback, T value1, U value2, V value3, W value4, X value5, Y value6)
+		{
+			if (!cancelOnDisable) return Timing.RunCoroutine(_PlayFunction(duration, callback, value1, value2, value3, value4, value5, value6, false));
+			if (!owner.isActiveAndEnabled) return new CoroutineHandle();
+			return Timing.RunCoroutine(_PlayFunction(duration, callback, value1, value2, value3, value4, value5, value6, false).CancelWith(owner));
+		}
+
+		static private IEnumerator<float> _PlayFunction<T,U,V,W,X,Y>(float duration, Callback<T,U,V,W,X,Y> callback, T value1, U value2, V value3, W value4, X value5, Y value6, bool scaledTime)
+		{
+			var timer = 0f;
+			do
+			{
+				timer += scaledTime ? Time.deltaTime : Time.unscaledDeltaTime;
+				callback(Mathf.Clamp01(timer / duration), value1, value2, value3, value4, value5, value6);
+				yield return Timing.WaitForOneFrame;
+			} while (timer < duration);
 		}
 		
 
