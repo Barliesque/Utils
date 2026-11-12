@@ -81,7 +81,7 @@ namespace Barliesque.Utils
 		/// <param name="target">The target rotation the object is trying to reach.</param>
 		/// <param name="velocity">
 		/// A reference to a cached Quaternion tracking the 4D rate of change (derivative). 
-		/// Note: To manually reset velocity to zero, pass <c>new Quaternion(0, 0, 0, 0)</c>. Do not use Identity.
+		/// Note: To manually reset velocity to zero, use <c>QuaternionUtils.ZeroVelocity</c>. Do not use Identity.
 		/// </param>
 		/// <param name="smoothTime">The approximate time in seconds it takes to reach the target destination.</param>
 		/// <param name="deltaTime">Time in seconds since the last update.  Default: Time.deltaTime</param>
@@ -91,6 +91,10 @@ namespace Barliesque.Utils
 			[DefaultValue("Time.deltaTime")] float deltaTime,
 			[DefaultValue("Mathf.Infinity")] float maxSpeed)
 		{
+			// No time has passed (e.g. Time.timeScale == 0): nothing to do.
+			// Without this guard, a zero deltaTime would poison the velocity with NaN.
+			if (deltaTime <= 0f) return rot;
+
 			// Account for double-cover
 			if (Quaternion.Dot(rot, target) < 0f)
 			{
@@ -100,7 +104,8 @@ namespace Barliesque.Utils
 				target.w *= -1f;
 			}
 
-			// Smooth damp (nlerp approx)
+			// Smooth damp (nlerp approx).
+			// Mathf.SmoothDamp updates each velocity component with the spring's own velocity -- keep it.
 			var result = new Vector4(
 				Mathf.SmoothDamp(rot.x, target.x, ref velocity.x, smoothTime, maxSpeed, deltaTime),
 				Mathf.SmoothDamp(rot.y, target.y, ref velocity.y, smoothTime, maxSpeed, deltaTime),
@@ -108,12 +113,12 @@ namespace Barliesque.Utils
 				Mathf.SmoothDamp(rot.w, target.w, ref velocity.w, smoothTime, maxSpeed, deltaTime)
 			).normalized;
 
-			// Compute derivative
-			var dtInv = 1f / deltaTime;
-			velocity.x = (result.x - rot.x) * dtInv;
-			velocity.y = (result.y - rot.y) * dtInv;
-			velocity.z = (result.z - rot.z) * dtInv;
-			velocity.w = (result.w - rot.w) * dtInv;
+			// Ensure the derivative stays tangent to the unit hypersphere at the result,
+			// by removing the component that points along the result quaternion.
+			var deriv = new Vector4(velocity.x, velocity.y, velocity.z, velocity.w);
+			deriv -= Vector4.Project(deriv, result);
+			velocity = new Quaternion(deriv.x, deriv.y, deriv.z, deriv.w);
+
 			return new Quaternion(result.x, result.y, result.z, result.w);
 		}
 		

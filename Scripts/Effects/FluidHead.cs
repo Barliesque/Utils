@@ -14,23 +14,40 @@ namespace Barliesque.Utils
 		[SerializeField] private float _rotationSmoothTime = 0.25f;
 		[SerializeField] private float _positionSmoothTime = 0.5f;
 		
-		[Tooltip("Automatically level out roll rotation, as long as the head's z-rotation is within this many degrees.")]
+		[Tooltip("Up to this many degrees of head roll are removed. Smaller tilts come out level; larger tilts are reduced by this amount.")]
 		[SerializeField] private float _levelThreshold = 15f;
 		
 		[SerializeField] private bool _disableOnMobile = true;
 
 		private Quaternion _rotationVelocity = QuaternionUtils.ZeroVelocity;
 		private Vector3 _positionVelocity = Vector3.zero;
+		private Quaternion _rotation = Quaternion.identity;
 		private Transform _xform;
 		
 		private void Awake()
 		{
+			_xform = GetComponent<Transform>();
+
 			if (_disableOnMobile && Application.isMobilePlatform && !Application.isEditor)
 			{
 				gameObject.SetActive(false);
 			}
+		}
 
-			_xform = GetComponent<Transform>();
+
+		private void OnEnable() => Snap();
+
+
+		/// <summary>
+		/// Jump straight to the player's head and clear any accumulated velocity.
+		/// </summary>
+		public void Snap()
+		{
+			if (!_playerCamera || !_xform) return;
+			_rotation = Level(_playerCamera.rotation);
+			_rotationVelocity = QuaternionUtils.ZeroVelocity;
+			_positionVelocity = Vector3.zero;
+			_xform.SetPositionAndRotation(_playerCamera.position, _rotation);
 		}
 		
 
@@ -38,13 +55,37 @@ namespace Barliesque.Utils
 		{
 			if (!_playerCamera) return;
 
-			// Smoothly follow the player camera
-			var euler = _playerCamera.eulerAngles;
-			var roll = Mathf.Abs(Mathf.DeltaAngle(0f, euler.z));
-			if (roll <= _levelThreshold) euler.z = 0f;
-			var targetRot = Quaternion.Euler(euler); 
-			_xform.rotation = QuaternionUtils.SmoothDamp(_xform.rotation, targetRot, ref _rotationVelocity, _rotationSmoothTime);
-			_xform.position = Vector3.SmoothDamp(_xform.position, _playerCamera.position, ref _positionVelocity, _positionSmoothTime);
+			// Unscaled, so spectators still see smooth motion while the game is paused
+			var dt = Time.unscaledDeltaTime;
+
+			var targetRot = Level(_playerCamera.rotation);
+			_rotation = QuaternionUtils.SmoothDamp(_rotation, targetRot, ref _rotationVelocity, _rotationSmoothTime, dt);
+			var position = Vector3.SmoothDamp(_xform.position, _playerCamera.position, ref _positionVelocity, _positionSmoothTime, Mathf.Infinity, dt);
+
+			_xform.SetPositionAndRotation(position, _rotation);
+		}
+
+
+		/// <summary>
+		/// Remove up to _levelThreshold degrees of roll, continuously (no snap at the threshold),
+		/// fading the effect out as the head looks straight up or down, where roll is ill-defined.
+		/// </summary>
+		private Quaternion Level(Quaternion head)
+		{
+			var forward = head * Vector3.forward;
+			var up = head * Vector3.up;
+
+			// World up, flattened onto the plane perpendicular to the view direction.
+			// Its length is cos(pitch): 1 when looking at the horizon, 0 when looking straight up/down.
+			var levelUp = Vector3.ProjectOnPlane(Vector3.up, forward);
+			var horizontalness = levelUp.magnitude;
+			if (horizontalness < 1e-4f) return head;
+
+			var roll = Vector3.SignedAngle(levelUp, up, forward);
+			var correction = Mathf.Clamp(roll, -_levelThreshold, _levelThreshold);
+			correction *= Mathf.InverseLerp(0.05f, 0.3f, horizontalness);
+
+			return Quaternion.AngleAxis(-correction, forward) * head;
 		}
 	}
 
